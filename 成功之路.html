@@ -1,0 +1,2398 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>整合行銷管理師認證｜第一篇 行銷管理概論 (1-55題)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '"Noto Sans TC"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              magenta: '#E542F5',   // 亮紫紅 / 洋紅
+              coral: '#FA4332',     // 珊瑚亮紅
+              berry: '#F74576',     // 莓果粉紅
+              electric: '#A73EF2',  // 電光紫
+              orange: '#F74811',    // 活力亮橘
+              bg: '#FDF8FF',        // 極淺紫粉白底色
+              ink: '#1E1B2E',       // 高對比深色文字
+            }
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-brand-bg text-brand-ink font-sans antialiased min-h-screen flex flex-col selection:bg-brand-magenta selection:text-white">
+
+  <!-- 頂部導航列 Header -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-purple-100 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between py-3 gap-3">
+        <!-- 品牌標題區 -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('dashboard')">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-magenta via-brand-electric to-brand-berry flex items-center justify-center text-white font-black text-lg shadow-md shadow-purple-200">
+              4P
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h1 class="text-base sm:text-lg font-extrabold tracking-tight text-brand-ink">整合行銷管理師認證</h1>
+                <span class="hidden sm:inline-block px-2 py-0.5 text-xs font-bold rounded-full bg-brand-magenta/15 text-brand-electric">1-55題</span>
+              </div>
+              <p class="text-xs text-slate-500 font-medium">第一篇｜行銷管理概論 互動題庫</p>
+            </div>
+          </div>
+
+          <!-- 手機版錯題數快速徽章 -->
+          <button onclick="switchTab('mistakes')" class="md:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-brand-coral/10 text-brand-coral text-xs font-bold border border-brand-coral/20">
+            <span>錯題本</span>
+            <span id="mobile-mistake-badge" class="px-1.5 py-0.2 bg-brand-coral text-white rounded-full text-[11px]">0</span>
+          </button>
+        </div>
+
+        <!-- 導航分頁按鈕 (支援手機橫向滑動) -->
+        <nav class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 no-scrollbar" aria-label="主導航">
+          <button data-tab="dashboard" onclick="switchTab('dashboard')" class="nav-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-sm font-bold transition-all">
+            📊 總覽與統計
+          </button>
+          <button data-tab="practice" onclick="switchTab('practice')" class="nav-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-sm font-bold transition-all">
+            ✏️ 刷題練習
+          </button>
+          <button data-tab="exam" onclick="switchTab('exam')" class="nav-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-sm font-bold transition-all">
+            ⏱️ 模擬測驗
+          </button>
+          <button data-tab="mistakes" onclick="switchTab('mistakes')" class="nav-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-1.5">
+            <span>📌 錯題本</span>
+            <span id="nav-mistake-badge" class="px-1.5 py-0.5 text-xs rounded-full bg-brand-coral text-white font-extrabold">0</span>
+          </button>
+          <button data-tab="bank" onclick="switchTab('bank')" class="nav-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-sm font-bold transition-all">
+            📚 全題庫
+          </button>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- 全域輕量提示框 (取代 alert) -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- 自訂確認對話框 Modal (取代 confirm) -->
+  <div id="confirm-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-brand-ink/50 backdrop-blur-xs p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-purple-100 transform transition-all">
+      <div class="flex items-center gap-3 mb-3">
+        <div id="modal-icon" class="w-10 h-10 rounded-full bg-brand-coral/15 text-brand-coral flex items-center justify-center text-xl font-bold">!</div>
+        <h3 id="modal-title" class="text-lg font-extrabold text-brand-ink">確認操作</h3>
+      </div>
+      <p id="modal-desc" class="text-sm text-slate-600 leading-relaxed mb-6">確定要執行此動作嗎？</p>
+      <div class="flex justify-end gap-3">
+        <button id="modal-cancel-btn" class="px-4 py-2.5 rounded-xl text-sm font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition">取消</button>
+        <button id="modal-confirm-btn" class="px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-brand-coral hover:opacity-90 shadow-md transition">確定執行</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主內容容器 -->
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
+
+    <!-- ==================== 1. 首頁儀表板與成績統計 ==================== -->
+    <section id="view-dashboard" class="space-y-6">
+      <!-- 頂部歡迎橫幅 -->
+      <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand-electric via-brand-magenta to-brand-berry p-6 sm:p-8 text-white shadow-xl shadow-purple-200/60">
+        <div class="relative z-10 max-w-2xl">
+          <span class="inline-block px-3 py-1 rounded-full bg-white/20 backdrop-blur-xs text-xs font-bold tracking-wider mb-3">
+            MATRIX 矩陣管理顧問參考題庫
+          </span>
+          <h2 class="text-2xl sm:text-3xl font-black tracking-tight mb-2">準備好拿下整合行銷管理師認證了嗎？</h2>
+          <p class="text-sm sm:text-base text-white/90 leading-relaxed mb-6">
+            完整收錄第一篇《行銷管理概論》第 1 至 55 題精華題庫，提供即時解析、擬真計時測驗與智慧錯題追蹤，助你一次高分過關！
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <button onclick="startPracticeMode('sequential')" class="px-5 py-3 rounded-xl bg-white text-brand-electric font-extrabold text-sm shadow-md hover:scale-[1.02] active:scale-95 transition">
+              🚀 依序開始刷題 (1-55)
+            </button>
+            <button onclick="startPracticeMode('random')" class="px-5 py-3 rounded-xl bg-brand-ink/25 hover:bg-brand-ink/35 text-white border border-white/30 font-bold text-sm backdrop-blur-xs transition">
+              🎲 隨機抽題挑戰
+            </button>
+            <button onclick="switchTab('exam')" class="px-5 py-3 rounded-xl bg-brand-orange text-white font-extrabold text-sm shadow-md hover:opacity-95 transition">
+              ⏱️ 進入模擬測驗
+            </button>
+          </div>
+        </div>
+        <!-- 裝飾幾何圓形 -->
+        <div class="hidden lg:block absolute -right-10 -bottom-16 w-64 h-64 rounded-full bg-white/10 blur-xl"></div>
+        <div class="hidden lg:block absolute right-24 -top-12 w-40 h-40 rounded-full bg-brand-orange/30 blur-lg"></div>
+      </div>
+
+      <!-- 四大關鍵數據卡片 -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white rounded-2xl p-5 border border-purple-100 shadow-xs">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-slate-500">累計作答題數</span>
+            <span class="w-8 h-8 rounded-lg bg-brand-electric/10 text-brand-electric flex items-center justify-center font-bold">📝</span>
+          </div>
+          <div class="text-2xl sm:text-3xl font-black text-brand-ink" id="stat-total-answered">0</div>
+          <p class="text-xs text-slate-400 mt-1">已覆蓋 <span id="stat-unique-covered" class="font-bold text-brand-electric">0</span> / 55 題</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 border border-purple-100 shadow-xs">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-slate-500">總體正確率</span>
+            <span class="w-8 h-8 rounded-lg bg-brand-magenta/10 text-brand-magenta flex items-center justify-center font-bold">🎯</span>
+          </div>
+          <div class="text-2xl sm:text-3xl font-black text-brand-ink"><span id="stat-accuracy">0</span>%</div>
+          <p class="text-xs text-slate-400 mt-1">答對 <span id="stat-total-correct" class="font-bold text-emerald-600">0</span> 題</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 border border-purple-100 shadow-xs cursor-pointer hover:border-brand-coral/40 transition" onclick="switchTab('mistakes')">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-slate-500">待複習錯題</span>
+            <span class="w-8 h-8 rounded-lg bg-brand-coral/10 text-brand-coral flex items-center justify-center font-bold">🔥</span>
+          </div>
+          <div class="text-2xl sm:text-3xl font-black text-brand-coral" id="stat-mistake-count">0</div>
+          <p class="text-xs text-brand-coral/80 font-medium mt-1">點擊立即前往消滅錯題 →</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 border border-purple-100 shadow-xs">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-slate-500">模擬考最高分</span>
+            <span class="w-8 h-8 rounded-lg bg-brand-orange/10 text-brand-orange flex items-center justify-center font-bold">🏆</span>
+          </div>
+          <div class="text-2xl sm:text-3xl font-black text-brand-orange" id="stat-best-score">--</div>
+          <p class="text-xs text-slate-400 mt-1">及格標準：<span class="font-bold text-slate-600">70 分</span></p>
+        </div>
+      </div>
+
+      <!-- 知識點掌握度 & 模擬測驗歷史紀錄 -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- 單元知識點掌握度長條圖 -->
+        <div class="lg:col-span-7 bg-white rounded-3xl p-6 border border-purple-100 shadow-xs flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="text-lg font-extrabold text-brand-ink">單元知識點掌握度分析</h3>
+                <p class="text-xs text-slate-500">依據五大核心命題主軸統計答題正確率</p>
+              </div>
+              <button onclick="confirmResetStats()" class="text-xs font-bold text-slate-400 hover:text-brand-coral transition px-2.5 py-1 rounded-lg hover:bg-red-50">
+                重置統計數據
+              </button>
+            </div>
+            <div id="category-stats-list" class="space-y-4 mt-4">
+              <!-- 由 JS 動態生成 -->
+            </div>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+            <span>💡 建議針對正確率低於 70% 的主題加強刷題</span>
+            <span class="font-bold text-brand-electric">共 5 大主題 / 55 題</span>
+          </div>
+        </div>
+
+        <!-- 模擬測驗歷史成績紀錄 -->
+        <div class="lg:col-span-5 bg-white rounded-3xl p-6 border border-purple-100 shadow-xs flex flex-col">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-lg font-extrabold text-brand-ink">模擬測驗成績紀錄</h3>
+              <p class="text-xs text-slate-500">最近 10 次模擬考試表現</p>
+            </div>
+            <span class="px-2.5 py-1 rounded-full bg-brand-berry/10 text-brand-berry text-xs font-bold">70分及格</span>
+          </div>
+          <div id="exam-history-list" class="flex-1 space-y-2.5 overflow-y-auto max-h-80 pr-1">
+            <!-- 由 JS 動態生成 -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 2. 練習模式 (Practice Mode) ==================== -->
+    <section id="view-practice" class="hidden space-y-5">
+      <!-- 頂部控制列 -->
+      <div class="bg-white rounded-2xl p-4 border border-purple-100 shadow-xs flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <button id="btn-mode-seq" onclick="setPracticeOrder('sequential')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition">
+            順序練習 (1→55)
+          </button>
+          <button id="btn-mode-rnd" onclick="setPracticeOrder('random')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition">
+            隨機出題
+          </button>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <span class="text-xs sm:text-sm font-bold text-slate-600">
+            進度：<span id="practice-progress-text" class="text-brand-electric font-extrabold">1 / 55</span>
+          </span>
+          <button onclick="toggleQuestionGrid('practice-grid-drawer')" class="px-3 py-2 rounded-xl bg-purple-50 hover:bg-purple-100 text-brand-electric text-xs sm:text-sm font-bold transition flex items-center gap-1.5">
+            <span>🔢 題號總覽</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 進度條 -->
+      <div class="w-full h-2.5 bg-purple-100 rounded-full overflow-hidden">
+        <div id="practice-progress-bar" class="h-full bg-gradient-to-r from-brand-magenta via-brand-electric to-brand-orange transition-all duration-300" style="width: 2%"></div>
+      </div>
+
+      <!-- 可收合題號跳轉面板 -->
+      <div id="practice-grid-drawer" class="hidden bg-white rounded-2xl p-4 border border-purple-100 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-extrabold text-slate-600">點擊題號快速跳轉（紫框：目前題目｜綠底：已答對｜紅底：曾答錯）</span>
+          <button onclick="toggleQuestionGrid('practice-grid-drawer')" class="text-xs text-slate-400 hover:text-slate-600 font-bold">收起 ✕</button>
+        </div>
+        <div id="practice-number-grid" class="grid grid-cols-7 sm:grid-cols-11 gap-1.5">
+          <!-- 由 JS 生成 1-55 題按鈕 -->
+        </div>
+      </div>
+
+      <!-- 題目主卡片 -->
+      <div id="practice-card" class="bg-white rounded-3xl p-5 sm:p-8 border border-purple-100 shadow-sm">
+        <!-- 題號、分類與加入錯題本按鈕 -->
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <div class="flex items-center gap-2">
+            <span id="practice-q-badge" class="px-3 py-1 rounded-xl bg-brand-electric text-white text-xs sm:text-sm font-black">第 1 題</span>
+            <span id="practice-q-category" class="px-3 py-1 rounded-xl bg-brand-magenta/10 text-brand-electric text-xs font-bold">行銷基本定義</span>
+          </div>
+          <button id="practice-bookmark-btn" onclick="toggleCurrentBookmark()" class="px-3.5 py-1.5 rounded-xl border text-xs sm:text-sm font-bold flex items-center gap-1.5 transition">
+            <span id="practice-bookmark-icon">☆</span>
+            <span id="practice-bookmark-text">加入錯題本</span>
+          </button>
+        </div>
+
+        <!-- 題幹 -->
+        <h2 id="practice-q-text" class="text-lg sm:text-xl font-extrabold text-brand-ink leading-relaxed mb-6">
+          題目載入中...
+        </h2>
+
+        <!-- 四個選項 -->
+        <div id="practice-options" class="space-y-3">
+          <!-- 由 JS 動態生成選項按鈕 -->
+        </div>
+
+        <!-- 即時解析區塊 (答題後顯示) -->
+        <div id="practice-explanation-box" class="hidden mt-6 rounded-2xl p-5 bg-gradient-to-br from-orange-50/90 to-purple-50/70 border-l-4 border-brand-orange">
+          <div class="flex items-center gap-2 mb-2">
+            <span id="practice-result-badge" class="px-2.5 py-0.5 rounded-lg text-xs font-black text-white bg-emerald-600">答對了！</span>
+            <span class="text-sm font-extrabold text-brand-ink">正確答案：<span id="practice-correct-ans" class="text-brand-electric text-base">C</span></span>
+          </div>
+          <div class="text-xs font-bold text-brand-orange uppercase tracking-wider mb-1">💡 觀念解析 Key Takeaway</div>
+          <p id="practice-explanation-text" class="text-sm sm:text-base text-slate-700 leading-relaxed"></p>
+        </div>
+
+        <!-- 底部導航按鈕 -->
+        <div class="mt-8 pt-5 border-t border-slate-100 flex items-center justify-between gap-3">
+          <button onclick="prevPracticeQuestion()" class="px-4 sm:px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm transition">
+            ← 上一題
+          </button>
+          <span class="hidden sm:inline text-xs text-slate-400 font-medium">快捷鍵：A / B / C / D 選答，Enter 下一題</span>
+          <button onclick="nextPracticeQuestion()" class="px-6 sm:px-8 py-3 rounded-xl bg-gradient-to-r from-brand-electric to-brand-magenta text-white font-extrabold text-sm shadow-md shadow-purple-200 hover:opacity-95 active:scale-95 transition">
+            下一題 →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 3. 模擬測驗模式 (Mock Exam Mode) ==================== -->
+    <section id="view-exam" class="hidden space-y-6">
+      <!-- 階段 A：測驗設定畫面 -->
+      <div id="exam-setup-panel" class="max-w-2xl mx-auto bg-white rounded-3xl p-6 sm:p-8 border border-purple-100 shadow-sm">
+        <div class="text-center mb-6">
+          <span class="inline-block px-3 py-1 rounded-full bg-brand-berry/15 text-brand-berry text-xs font-extrabold mb-2">SIMULATION EXAM</span>
+          <h2 class="text-2xl font-black text-brand-ink">整合行銷管理師｜全真模擬測驗</h2>
+          <p class="text-sm text-slate-500 mt-1">作答期間隱藏解析，交卷後統一計分（滿分 100 分，70 分及格）並自動收錄錯題</p>
+        </div>
+
+        <div class="space-y-5">
+          <!-- 題數選擇 -->
+          <div>
+            <label class="block text-sm font-extrabold text-brand-ink mb-2">1. 選擇測驗題數</label>
+            <div class="grid grid-cols-3 gap-3">
+              <button type="button" onclick="selectExamCount(20)" data-exam-count="20" class="exam-count-btn py-3.5 rounded-2xl border-2 font-extrabold text-sm transition">
+                20 題<span class="block text-xs font-normal opacity-80">快速小考</span>
+              </button>
+              <button type="button" onclick="selectExamCount(30)" data-exam-count="30" class="exam-count-btn py-3.5 rounded-2xl border-2 font-extrabold text-sm transition">
+                30 題<span class="block text-xs font-normal opacity-80">標準模擬</span>
+              </button>
+              <button type="button" onclick="selectExamCount(55)" data-exam-count="55" class="exam-count-btn py-3.5 rounded-2xl border-2 font-extrabold text-sm transition">
+                55 題<span class="block text-xs font-normal opacity-80">全題庫總決戰</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 計時器設定 -->
+          <div class="flex items-center justify-between p-4 rounded-2xl bg-purple-50/70 border border-purple-100">
+            <div>
+              <div class="text-sm font-extrabold text-brand-ink">2. 開啟倒數計時器</div>
+              <div class="text-xs text-slate-500">預設每題 1 分鐘（例如 20 題限時 20 分鐘），時間到自動交卷</div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="exam-timer-toggle" class="sr-only peer" checked />
+              <div class="w-12 h-7 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-brand-electric"></div>
+            </label>
+          </div>
+
+          <button onclick="startMockExam()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-brand-berry via-brand-magenta to-brand-electric text-white font-black text-base shadow-lg shadow-pink-200 hover:opacity-95 active:scale-[0.99] transition">
+            開始模擬測驗 🚀
+          </button>
+        </div>
+      </div>
+
+      <!-- 階段 B：測驗進行中畫面 -->
+      <div id="exam-active-panel" class="hidden space-y-5">
+        <!-- 頂部狀態與倒數列 -->
+        <div class="bg-white rounded-2xl p-4 border border-purple-100 shadow-xs flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <span class="px-3 py-1.5 rounded-xl bg-brand-berry text-white text-xs sm:text-sm font-black">
+              第 <span id="exam-curr-num">1</span> / <span id="exam-total-num">20</span> 題
+            </span>
+            <span id="exam-timer-box" class="px-3 py-1.5 rounded-xl bg-brand-coral/10 text-brand-coral text-xs sm:text-sm font-extrabold flex items-center gap-1.5">
+              <span>⏳ 剩餘時間：</span>
+              <span id="exam-timer-display" class="font-mono text-base">20:00</span>
+            </span>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button onclick="toggleQuestionGrid('exam-grid-drawer')" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs sm:text-sm font-bold transition">
+              📋 答題卡 (<span id="exam-answered-count">0</span>/<span id="exam-total-num-2">20</span>)
+            </button>
+            <button onclick="confirmSubmitExam()" class="px-4 py-2 rounded-xl bg-brand-orange text-white text-xs sm:text-sm font-extrabold shadow-sm hover:opacity-95 transition">
+              交卷計分
+            </button>
+          </div>
+        </div>
+
+        <!-- 答題卡抽屜 -->
+        <div id="exam-grid-drawer" class="bg-white rounded-2xl p-4 border border-purple-100 shadow-xs">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5 text-xs text-slate-500">
+            <span>答題卡狀態（紫底：已作答｜橘框：已標記不確定｜白底：未作答）</span>
+          </div>
+          <div id="exam-number-grid" class="grid grid-cols-7 sm:grid-cols-10 md:grid-cols-15 gap-1.5"></div>
+        </div>
+
+        <!-- 測驗題目卡片 -->
+        <div class="bg-white rounded-3xl p-5 sm:p-8 border border-purple-100 shadow-sm">
+          <div class="flex items-center justify-between gap-2 mb-4">
+            <span id="exam-q-orig-id" class="text-xs font-bold text-slate-400">題庫原題號 #1</span>
+            <button id="exam-flag-btn" onclick="toggleExamFlag()" class="px-3 py-1.5 rounded-xl border text-xs font-bold transition">
+              🚩 標記不確定
+            </button>
+          </div>
+
+          <h2 id="exam-q-text" class="text-lg sm:text-xl font-extrabold text-brand-ink leading-relaxed mb-6"></h2>
+
+          <div id="exam-options" class="space-y-3"></div>
+
+          <div class="mt-8 pt-5 border-t border-slate-100 flex items-center justify-between">
+            <button onclick="prevExamQuestion()" class="px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm transition">
+              ← 上一題
+            </button>
+            <button id="exam-next-btn" onclick="nextExamQuestion()" class="px-6 py-3 rounded-xl bg-brand-electric text-white font-extrabold text-sm shadow-md transition">
+              下一題 →
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 階段 C：測驗成績單與檢討畫面 -->
+      <div id="exam-result-panel" class="hidden space-y-6">
+        <!-- 成績總結卡 -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-purple-100 shadow-sm text-center">
+          <div id="exam-pass-badge" class="inline-block px-4 py-1.5 rounded-full text-sm font-black mb-3">
+            🎉 恭喜通過及格標準！
+          </div>
+          <div class="text-5xl sm:text-6xl font-black text-brand-ink my-2">
+            <span id="exam-final-score">85</span><span class="text-2xl text-slate-400 font-bold"> 分</span>
+          </div>
+          <p class="text-sm text-slate-500 mb-6">
+            答對 <span id="exam-correct-total" class="font-extrabold text-emerald-600">17</span> 題 / 共 <span id="exam-question-total" class="font-bold">20</span> 題 ｜ 用時 <span id="exam-time-used" class="font-bold text-brand-electric">05:32</span>
+          </p>
+
+          <div class="flex flex-wrap justify-center gap-3">
+            <button onclick="resetExamToSetup()" class="px-5 py-2.5 rounded-xl bg-brand-electric text-white font-bold text-sm shadow-sm hover:opacity-95 transition">
+              🔄 再測驗一次
+            </button>
+            <button onclick="switchTab('mistakes')" class="px-5 py-2.5 rounded-xl bg-brand-coral/10 text-brand-coral font-bold text-sm hover:bg-brand-coral/20 transition">
+              📌 前往錯題本複習
+            </button>
+          </div>
+        </div>
+
+        <!-- 檢討篩選列 -->
+        <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-purple-100">
+          <h3 class="text-base font-extrabold text-brand-ink">試卷逐題檢討與解析</h3>
+          <div class="flex gap-2">
+            <button id="review-filter-all" onclick="renderExamReviewList('all')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-brand-electric text-white">
+              全部題目
+            </button>
+            <button id="review-filter-wrong" onclick="renderExamReviewList('wrong')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-600">
+              僅看錯題
+            </button>
+          </div>
+        </div>
+
+        <!-- 檢討題目列表 -->
+        <div id="exam-review-list" class="space-y-4"></div>
+      </div>
+    </section>
+
+    <!-- ==================== 4. 錯題練習模式 (Mistake Review Mode) ==================== -->
+    <section id="view-mistakes" class="hidden space-y-6">
+      <div class="bg-white rounded-3xl p-6 border border-purple-100 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 class="text-xl font-black text-brand-ink">我的專屬錯題本</h2>
+            <span id="mistake-header-count" class="px-2.5 py-0.5 rounded-full bg-brand-coral text-white text-xs font-extrabold">0 題</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-500 mt-1">自動收錄練習與模擬測驗答錯的題目，反覆重練直到完全精熟！</p>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          <button id="btn-start-mistake-drill" onclick="startMistakeDrill()" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-brand-coral to-brand-berry text-white font-extrabold text-xs sm:text-sm shadow-sm hover:opacity-95 transition">
+            🔥 開始錯題重練
+          </button>
+          <button onclick="confirmClearMistakes()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-red-50 text-slate-600 hover:text-brand-coral font-bold text-xs sm:text-sm transition">
+            🗑️ 清空錯題本
+          </button>
+        </div>
+      </div>
+
+      <!-- 錯題互動重練卡片 (點擊「開始錯題重練」後展開) -->
+      <div id="mistake-drill-box" class="hidden bg-white rounded-3xl p-5 sm:p-8 border-2 border-brand-coral/30 shadow-md">
+        <div class="flex items-center justify-between gap-2 mb-4">
+          <div class="flex items-center gap-2">
+            <span class="px-3 py-1 rounded-xl bg-brand-coral text-white text-xs font-black">錯題重練模式</span>
+            <span id="drill-progress" class="text-xs font-bold text-slate-500">1 / 5</span>
+          </div>
+          <button onclick="closeMistakeDrill()" class="text-xs font-bold text-slate-400 hover:text-slate-700 px-2 py-1">結束重練 ✕</button>
+        </div>
+
+        <div class="mb-2">
+          <span id="drill-q-id" class="text-xs font-extrabold text-brand-electric">第 1 題</span>
+          <span id="drill-wrong-times" class="ml-2 text-xs font-bold text-brand-coral bg-brand-coral/10 px-2 py-0.5 rounded-md">累計答錯 1 次</span>
+        </div>
+        <h3 id="drill-q-text" class="text-lg sm:text-xl font-extrabold text-brand-ink leading-relaxed mb-5"></h3>
+        <div id="drill-options" class="space-y-3"></div>
+
+        <!-- 重練解析與移出按鈕 -->
+        <div id="drill-feedback" class="hidden mt-6 p-5 rounded-2xl bg-purple-50/80 border-l-4 border-brand-electric">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+            <span id="drill-result-label" class="text-sm font-black"></span>
+            <button id="drill-remove-btn" onclick="removeCurrentDrillFromMistakes()" class="px-3 py-1.5 rounded-xl bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700 transition">
+              ✅ 已精熟，移出錯題本
+            </button>
+          </div>
+          <p id="drill-explanation" class="text-sm text-slate-700 leading-relaxed"></p>
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-slate-100 flex justify-between">
+          <button onclick="prevDrillQuestion()" class="px-4 py-2.5 rounded-xl bg-slate-100 text-slate-700 text-sm font-bold">← 上一題</button>
+          <button onclick="nextDrillQuestion()" class="px-5 py-2.5 rounded-xl bg-brand-electric text-white text-sm font-bold">下一題 →</button>
+        </div>
+      </div>
+
+      <!-- 錯題清單列表 -->
+      <div id="mistake-list-container" class="space-y-4"></div>
+    </section>
+
+    <!-- ==================== 5. 全題庫瀏覽與搜尋 (All Questions Bank) ==================== -->
+    <section id="view-bank" class="hidden space-y-5">
+      <div class="bg-white rounded-3xl p-5 sm:p-6 border border-purple-100 shadow-xs space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-xl font-black text-brand-ink">全題庫總覽（第 1～55 題）</h2>
+            <p class="text-xs text-slate-500 mt-0.5">支援關鍵字即時篩選與一鍵顯示/隱藏答案解析，適合考前衝刺背誦</p>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button id="toggle-bank-answers-btn" onclick="toggleBankAnswers()" class="px-4 py-2.5 rounded-xl bg-brand-electric text-white text-xs sm:text-sm font-extrabold shadow-xs transition">
+              👁️ 隱藏答案與解析
+            </button>
+          </div>
+        </div>
+
+        <!-- 搜尋框與分類篩選 -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+          <div class="md:col-span-7 relative">
+            <input type="text" id="bank-search-input" oninput="renderQuestionBank()" placeholder="搜尋題目關鍵字（例如：科特勒、低行銷、近視症、OEM、紅色行銷...）" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-purple-200 focus:outline-none focus:border-brand-electric text-sm bg-brand-bg/50" />
+            <span class="absolute left-3.5 top-2.5 text-slate-400">🔍</span>
+          </div>
+          <div class="md:col-span-5">
+            <select id="bank-category-filter" onchange="renderQuestionBank()" class="w-full px-3.5 py-2.5 rounded-xl border border-purple-200 focus:outline-none focus:border-brand-electric text-sm bg-white font-medium text-slate-700">
+              <option value="all">全部分類主題 (55 題)</option>
+              <option value="行銷定義與需要/慾求/需求">1. 行銷定義與需要/慾求/需求</option>
+              <option value="行銷時代演進與經營導向">2. 行銷時代演進與經營導向</option>
+              <option value="社會/綠色/善因行銷">3. 社會/綠色/善因行銷</option>
+              <option value="需求狀態與八大行銷策略">4. 需求狀態與八大行銷策略</option>
+              <option value="市場哲學演進與行銷近視/遠視症">5. 市場哲學演進與行銷近視/遠視症</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- 搜尋結果數量提示 -->
+      <div class="text-xs font-bold text-slate-500 px-1">
+        顯示 <span id="bank-result-count" class="text-brand-electric font-extrabold">55</span> 筆題目
+      </div>
+
+      <!-- 題庫卡片列表 -->
+      <div id="bank-list-container" class="space-y-4"></div>
+    </section>
+
+  </main>
+
+  <!-- 頁尾 -->
+  <footer class="border-t border-purple-100 bg-white/70 py-5 mt-12">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
+      <div>整合行銷管理師認證題庫練習系統｜第一篇：行銷管理概論（1-55題）</div>
+      <div>資料來源：MATRIX 矩陣管理顧問有限公司 參考題庫</div>
+    </div>
+  </footer>
+
+  <script>
+    // =========================================================================
+    // 1. 完整第 1～55 題題庫資料（含分類、選項、標準答案與逐題專業解析）
+    // =========================================================================
+    const QUESTIONS = [
+      {
+        id: 1,
+        category: "行銷定義與需要/慾求/需求",
+        question: "以下對「行銷」的敘述何者為非?",
+        options: {
+          A: "英文為 marketing",
+          B: "中國大陸稱為營銷",
+          C: "行銷等同於銷售",
+          D: "美國行銷協會(American Marketing Association, AMA) 2013年將行銷定義為行銷就是創造、溝通、傳遞與交換對顧客、客戶、合作夥伴與整體社會有價值的活動、架構與流程。"
+        },
+        answer: "C",
+        explanation: "行銷（Marketing）不等同於銷售（Selling）。銷售只是行銷活動中的一環（著重於將既有產品推銷出去），而行銷涵蓋市場調查、產品開發、定價、通路、推廣與顧客關係管理等整體價值創造流程。"
+      },
+      {
+        id: 2,
+        category: "行銷定義與需要/慾求/需求",
+        question: "以下對需要(need)與需求(demand)的定義何者為是?",
+        options: {
+          A: "先有需求才會有需要",
+          B: "需求是人類與生俱來的生理或心理的特徵",
+          C: "需要是反映消費者的購買力",
+          D: "需求=需要+購買力"
+        },
+        answer: "D",
+        explanation: "「需要（Need）」是人類與生俱來的基本生理或心理匱乏狀態（如飢餓、安全感）；「慾求（Want）」是經由文化與個性塑造的具體滿足物；當慾求加上「購買力（Purchasing Power）」與購買意願時，才轉化為「需求（Demand）」，即「需求 = 需要（慾求）+ 購買力」。"
+      },
+      {
+        id: 3,
+        category: "行銷定義與需要/慾求/需求",
+        question: "以下對需要(need)、慾求(want)與需求(demand)關係順序何者為是?",
+        options: {
+          A: "需要(need) →慾求(want) →需求(demand)",
+          B: "需要(need)→需求(demand)→慾求(want)",
+          C: "需求(demand) →慾求(want)→需要(need)",
+          D: "慾求(want)→需要(need)→需求(demand)"
+        },
+        answer: "A",
+        explanation: "消費者行為的演進順序為：先產生基本生理/心理的「需要（Need）」，接著受社會文化影響形成對特定商品的「慾求（Want）」，最後具備支付能力時成為有效「需求（Demand）」。"
+      },
+      {
+        id: 4,
+        category: "行銷定義與需要/慾求/需求",
+        question: "小明已經存了6萬元想要去買一隻 iphone 16手機,小明是屬於下列哪一種消費特徵?",
+        options: {
+          A: "需要(need)",
+          B: "需求(demand)",
+          C: "慾求(want)",
+          D: "以上皆非"
+        },
+        answer: "B",
+        explanation: "小明不僅想要特定品牌手機（iPhone 16，屬於慾求），而且「已經存了6萬元」具備足夠的購買力，因此已構成有效「需求（Demand）」。"
+      },
+      {
+        id: 5,
+        category: "行銷定義與需要/慾求/需求",
+        question: "小華目前正努力打工賺錢準備去購買一隻心儀的 iphone 16手機,小華是屬於下列哪一種消費特徵?",
+        options: {
+          A: "需要(need)",
+          B: "需求(demand)",
+          C: "慾求(want)",
+          D: "以上皆非"
+        },
+        answer: "C",
+        explanation: "小華心儀特定品牌（iPhone 16），但「目前正努力打工賺錢」，代表尚未具備足夠的購買力，因此仍停留在「慾求（Want）」階段，尚未轉化為需求（Demand）。"
+      },
+      {
+        id: 6,
+        category: "行銷定義與需要/慾求/需求",
+        question: "某鞋商想到非洲土著區開發新市場,發覺土著都沒穿鞋子而且沒有經濟能力買鞋,就悻悻然打道回府放棄非洲市場,請問鞋商為何會選擇放棄市場,是因為發覺非洲土著市場?",
+        options: {
+          A: "有需要沒需求",
+          B: "有需求沒需要",
+          C: "有需要沒慾求",
+          D: "有需求沒慾求"
+        },
+        answer: "A",
+        explanation: "土著光腳走路有保護雙腳的基本「需要（Need）」，但因為「沒有經濟能力買鞋」（缺乏購買力），無法形成有效「需求（Demand）」，故為「有需要沒需求」。"
+      },
+      {
+        id: 7,
+        category: "行銷定義與需要/慾求/需求",
+        question: "某鞋商想到非洲土著區開發新市場,看到土著都沒穿鞋,很高興潛在市場很大,決定留下經營賣鞋的生意,請問鞋商為何會選擇開發這個市場?",
+        options: {
+          A: "發覺市場有需要",
+          B: "發覺市場有慾求",
+          C: "發覺市場有需求",
+          D: "以上皆非"
+        },
+        answer: "A",
+        explanation: "看到土著沒穿鞋，代表保護雙腳的基本「需要（Need）」尚未被滿足，具有龐大的潛在市場開發空間，因此是因為發覺市場有「需要」。"
+      },
+      {
+        id: 8,
+        category: "行銷定義與需要/慾求/需求",
+        question: "下列敘述何者正確?",
+        options: {
+          A: "一般商人最希望看到有需要的市場",
+          B: "一般商人最希望看到有需求的市場",
+          C: "一般商人最希望看到有慾求的市場",
+          D: "以上皆是"
+        },
+        answer: "B",
+        explanation: "只有「需求（Demand）」同時具備購買意願與實際購買力，能直接轉化為企業的銷售營收與利潤，因此商人最希望看到有「需求」的市場。"
+      },
+      {
+        id: 9,
+        category: "行銷定義與需要/慾求/需求",
+        question: "以下對交換(exchange)的說明何者為非?",
+        options: {
+          A: "所有的產品與服務的買賣都屬交換行為",
+          B: "擔任 NPO 志工也是屬於交換行為",
+          C: "交換一定要有對應的價格",
+          D: "交換的代價可以是金錢、勞務、時間"
+        },
+        answer: "C",
+        explanation: "行銷的核心是「交換（Exchange）」，是指透過提供某種東西作為回報，從他人處取得所需之物的行為。交換不一定需要金錢或價格（例如志工付出時間與勞務換取心理成就感、以物易物等）。"
+      },
+      {
+        id: 10,
+        category: "行銷時代演進與經營導向",
+        question: "以下敘述何者正確?",
+        options: {
+          A: "顧客導向<消費者導向<市場導向<社會行銷導向<行銷導向",
+          B: "消費者導向<顧客導向<市場導向<行銷導向<社會行銷導向",
+          C: "顧客導向<消費者導向<市場導向<行銷導向<社會行銷導向",
+          D: "顧客導向<消費者導向<行銷導向<市場導向<社會行銷導向"
+        },
+        answer: "C",
+        explanation: "行銷觀念範疇由窄至廣的演進順序為：顧客導向（僅關注實際購買者）＜消費者導向（涵蓋最終使用者與潛在消費者）＜市場導向（同時考量消費者與競爭者動態）＜行銷導向（整合企業內部各部門滿足市場）＜社會行銷導向（兼顧消費者、企業利潤與整體社會長期福祉）。"
+      },
+      {
+        id: 11,
+        category: "行銷時代演進與經營導向",
+        question: "以下敘述何者為是?",
+        options: {
+          A: "行銷2.0時代,以消費者為王",
+          B: "行銷3.0時代,以社會共同價值為王",
+          C: "行銷4.0時代,以數位為核心",
+          D: "以上皆是"
+        },
+        answer: "D",
+        explanation: "科特勒提出的行銷演進：行銷1.0以產品為中心；行銷2.0以消費者為中心（消費者為王）；行銷3.0以價值觀與社會人文精神為中心（社會共同價值）；行銷4.0結合線上與線下，以數位科技為核心。故以上皆是。"
+      },
+      {
+        id: 12,
+        category: "行銷時代演進與經營導向",
+        question: "行銷4.0時代,是屬於哪種導向的時代?",
+        options: {
+          A: "生產導向",
+          B: "銷售導向",
+          C: "顧客導向",
+          D: "社會行銷導向"
+        },
+        answer: "D",
+        explanation: "行銷3.0與4.0時代強調企業除了滿足顧客與數位互動外，更須承擔社會責任、追求共好與永續發展，屬於「社會行銷導向」的時代。"
+      },
+      {
+        id: 13,
+        category: "行銷時代演進與經營導向",
+        question: "《行銷5.0》一書的作者是誰?",
+        options: {
+          A: "彼得杜拉克(Peter Ferdinand Drucker)等",
+          B: "麥可波特(Michael Eugene Porter)等",
+          C: "菲利浦科特勒(Philip Kotler)等",
+          D: "大衛・艾克(David A. Aaker)等"
+        },
+        answer: "C",
+        explanation: "《行銷5.0：科技與人性化的完美結合》（Marketing 5.0: Technology for Humanity）由「現代行銷學之父」菲利浦·科特勒（Philip Kotler）等人共同著作。"
+      },
+      {
+        id: 14,
+        category: "行銷時代演進與經營導向",
+        question: "近來台灣食品業發生食安危機,此乃說明這些嚴重違反食安標準的廠商不具備一種經營導向?",
+        options: {
+          A: "銷售導向",
+          B: "消費者導向",
+          C: "行銷導向",
+          D: "社會行銷導向"
+        },
+        answer: "D",
+        explanation: "「社會行銷導向」要求企業在追求利潤與滿足顧客的同時，必須維護消費者健康與社會整體長期福祉。黑心食品廠商犧牲民眾健康換取利益，正是缺乏社會行銷導向。"
+      },
+      {
+        id: 15,
+        category: "行銷時代演進與經營導向",
+        question: "下列何者有「現代行銷學之父」的稱號?",
+        options: {
+          A: "彼得杜拉克(Peter Ferdinand Drucker)",
+          B: "麥可波特(Michael Eugene Porter)",
+          C: "菲利浦科特勒(Philip Kotler)",
+          D: "大衛・艾克(David A. Aaker)"
+        },
+        answer: "C",
+        explanation: "菲利浦·科特勒（Philip Kotler）被譽為「現代行銷學之父」；彼得·杜拉克為「現代管理學之父」；麥可·波特為「競爭策略之父」；大衛·艾克為「品牌管理之父」。"
+      },
+      {
+        id: 16,
+        category: "行銷時代演進與經營導向",
+        question: "華碩廣告標語「華碩品質、堅若磐石」,是強調該品牌那一經營導向?",
+        options: {
+          A: "產品導向",
+          B: "銷售導向",
+          C: "顧客導向",
+          D: "社會行銷導向"
+        },
+        answer: "A",
+        explanation: "「產品導向（Product Concept）」認為消費者喜歡品質最優、性能最佳、最具創新特色的產品，因此企業致力於持續改進產品品質（「堅若磐石」即強調品質卓越）。"
+      },
+      {
+        id: 17,
+        category: "行銷時代演進與經營導向",
+        question: "中華航空廣告標語「華航以客為尊」,是強調該品牌那一個經營導向?",
+        options: {
+          A: "生產導向",
+          B: "銷售導向",
+          C: "消費者導向",
+          D: "社會行銷導向"
+        },
+        answer: "C",
+        explanation: "「以客為尊」強調以旅客的需求與滿意度為服務核心，屬於「消費者導向（顧客導向）」。"
+      },
+      {
+        id: 18,
+        category: "行銷時代演進與經營導向",
+        question: "家樂福廣告標語「天天都便宜」,是強調該品牌那一個經營導向?",
+        options: {
+          A: "生產導向",
+          B: "銷售導向",
+          C: "顧客導向",
+          D: "社會行銷導向"
+        },
+        answer: "B",
+        explanation: "透過低價促銷、價格訴求吸引消費者大量購買以衝高銷量，屬於「銷售導向（Selling Concept）」的典型做法（依本題庫官方標準答案為 B）。"
+      },
+      {
+        id: 19,
+        category: "行銷時代演進與經營導向",
+        question: "Nike 廣告標語「Just Do It」,是強調該品牌哪一個經營導向?",
+        options: {
+          A: "生產導向",
+          B: "銷售導向",
+          C: "消費者導向",
+          D: "社會行銷導向"
+        },
+        answer: "C",
+        explanation: "「Just Do It」激勵消費者突破自我、追求運動精神，從消費者的心理動機與生活態度出發，屬於「消費者導向」。"
+      },
+      {
+        id: 20,
+        category: "行銷時代演進與經營導向",
+        question: "帝亞吉歐(DIAGEO)之 Johnnie walker 自2003年起在台灣積極推動「KEEP WALKING 夢想資助計畫」,是強調該品牌那一個經營導向?",
+        options: {
+          A: "生產導向",
+          B: "銷售導向",
+          C: "顧客導向",
+          D: "社會行銷導向"
+        },
+        answer: "D",
+        explanation: "企業長期投入資源贊助台灣各領域逐夢者、回饋社會並創造正向社會影響力，展現企業社會責任（CSR），屬於「社會行銷導向」。"
+      },
+      {
+        id: 21,
+        category: "社會/綠色/善因行銷",
+        question: "下列哪一個非屬「社會行銷」範疇?",
+        options: {
+          A: "善因行銷",
+          B: "紅色行銷",
+          C: "橘色行銷",
+          D: "綠色行銷"
+        },
+        answer: "C",
+        explanation: "「橘色行銷（橘色商機）」是指針對50歲以上熟齡銀髮族所進行的市場區隔行銷；而善因行銷、綠色行銷（環保永續）、紅色行銷（如Apple Product RED捐助愛滋防治公益）皆屬於回饋社會公益的「社會行銷」範疇。"
+      },
+      {
+        id: 22,
+        category: "社會/綠色/善因行銷",
+        question: "下列何者屬「社會行銷」範疇?",
+        options: {
+          A: "善因行銷",
+          B: "紅色行銷",
+          C: "綠色行銷",
+          D: "以上皆是"
+        },
+        answer: "D",
+        explanation: "善因行銷（結合公益捐款）、紅色行銷（紅色商品部分收益捐助公益組織）、綠色行銷（環境保護與永續發展）皆致力於促進社會整體福祉，均屬於社會行銷範疇。"
+      },
+      {
+        id: 23,
+        category: "社會/綠色/善因行銷",
+        question: "P&G 長期推動「六分鐘護一生」防治子宮頸癌是屬於何種行銷範疇?",
+        options: {
+          A: "綠色行銷",
+          B: "善因行銷",
+          C: "運動行銷",
+          D: "病毒式行銷"
+        },
+        answer: "B",
+        explanation: "「善因行銷（Cause-Related Marketing）」是指企業將產品銷售或品牌推廣與社會公益議題（如婦女癌症篩檢防治）結合，既提升品牌形象又造福社會。"
+      },
+      {
+        id: 24,
+        category: "社會/綠色/善因行銷",
+        question: "麥當勞和星巴克愈來愈重視管控原物料的來源不能來自破壞雨林生產的農作物,此乃屬於何種行銷範疇?",
+        options: {
+          A: "綠色行銷",
+          B: "橘色行銷",
+          C: "紅色行銷",
+          D: "病毒式行銷"
+        },
+        answer: "A",
+        explanation: "「綠色行銷（Green Marketing）」強調在生產、供應鏈、包裝與銷售過程中注重環境保護、生態永續與減少對自然環境的破壞（如保護熱帶雨林）。"
+      },
+      {
+        id: 25,
+        category: "社會/綠色/善因行銷",
+        question: "「社會行銷」的觀念是同時考量滿足哪三個對象?",
+        options: {
+          A: "消費者/企業/社會",
+          B: "消費者/政府/社會",
+          C: "消費者/員工/社會",
+          D: "消費者/媒體/社會"
+        },
+        answer: "A",
+        explanation: "菲利浦·科特勒定義「社會行銷觀念（Societal Marketing Concept）」必須在三個利害關係人之間取得平衡：消費者的慾望滿足、企業的利潤目標，以及社會的長期整體利益。"
+      },
+      {
+        id: 26,
+        category: "社會/綠色/善因行銷",
+        question: "可口可樂推出北極熊圖案限量瓶包裝,消費者購買限量瓶可樂就捐助世界自然基金會 WWF (World Wildlife Fund),此乃屬?",
+        options: {
+          A: "綠色行銷",
+          B: "社會行銷",
+          C: "善因行銷",
+          D: "以上皆是"
+        },
+        answer: "D",
+        explanation: "此活動保護北極熊生態（綠色行銷）、消費者每買一瓶即捐助WWF公益組織（善因行銷），而綠色與善因行銷皆隸屬於「社會行銷」大範疇，故「以上皆是」。"
+      },
+      {
+        id: 27,
+        category: "社會/綠色/善因行銷",
+        question: "由美國ALS「肌肉萎縮性側索硬化症(俗稱漸凍人症)」協會所發起的「冰桶挑戰」(Ice Bucket Challenge)在全球引發熱潮,此乃屬?",
+        options: {
+          A: "代言人行銷",
+          B: "社群病毒行銷",
+          C: "善因行銷",
+          D: "以上皆是"
+        },
+        answer: "D",
+        explanation: "冰桶挑戰透過名人點名接力（代言人行銷）、在社群媒體迅速擴散（社群病毒行銷），最終目的為漸凍人協會募款與提升疾病關注（善因行銷），因此三者皆符合。"
+      },
+      {
+        id: 28,
+        category: "社會/綠色/善因行銷",
+        question: "2006年起麥當勞承諾,停止出售用亞馬遜森林地區出產的大豆所飼養的牲畜做食品,與綠色和平組織一起保護亞馬遜雨林,此乃屬?",
+        options: {
+          A: "綠色行銷",
+          B: "善因行銷",
+          C: "社會行銷",
+          D: "以上皆是"
+        },
+        answer: "D",
+        explanation: "保護亞馬遜雨林生態屬於「綠色行銷」，與非營利環保組織合作推動公益倡議具備「善因行銷」精神，兩者皆涵蓋於「社會行銷」之下，故選(D)。"
+      },
+      {
+        id: 29,
+        category: "社會/綠色/善因行銷",
+        question: "全球知名廠商(Apple、美國運通)近來紛紛推出紅色系列商品,將紅色外觀產品銷售金額提撥部份比例捐助給公益組織。此乃屬?",
+        options: {
+          A: "紅色行銷",
+          B: "善因行銷",
+          C: "社會行銷",
+          D: "以上皆是"
+        },
+        answer: "D",
+        explanation: "推出紅色公益系列商品稱為「紅色行銷」（如 Product RED），將銷售額提撥捐助公益組織正是典型的「善因行銷」，同時也屬於「社會行銷」範疇，故選(D)。"
+      },
+      {
+        id: 30,
+        category: "需求狀態與八大行銷策略",
+        question: "行銷人面對因季節、離尖峰所導致過度供給或需求的波動,應該採取何種行銷策略?",
+        options: {
+          A: "反行銷",
+          B: "重新行銷",
+          C: "規則行銷",
+          D: "維持行銷"
+        },
+        answer: "C",
+        explanation: "面對「不規則需求（Irregular Demand）」（如淡旺季、離尖峰時間的波動），行銷人應採取「規則行銷（Synchromarketing）」，透過彈性定價（離峰優惠）或促銷來調節需求時間，使供需趨於平穩。"
+      },
+      {
+        id: 31,
+        category: "需求狀態與八大行銷策略",
+        question: "某連鎖速食店發覺市場供需已經達到飽和,其該採取何種行銷策略?",
+        options: {
+          A: "刺激行銷",
+          B: "重新行銷",
+          C: "開發行銷",
+          D: "維持行銷"
+        },
+        answer: "D",
+        explanation: "當市場處於「充分需求（Full Demand）」（供需達到飽和均衡狀態）時，企業應採取「維持行銷（Maintenance Marketing）」，致力於維持產品品質與顧客滿意度，防範競爭者搶占市場。"
+      },
+      {
+        id: 32,
+        category: "需求狀態與八大行銷策略",
+        question: "台南某文創百貨假日人潮過多,為了維護服務品質,進行入館人數的流量管制,此乃屬於哪一種行銷策略?",
+        options: {
+          A: "低行銷",
+          B: "反行銷",
+          C: "規則行銷",
+          D: "維持行銷"
+        },
+        answer: "A",
+        explanation: "當面臨「過度需求（Overfull Demand）」（人潮超過負荷能力）時，企業應採取「低行銷 / 減量行銷（Demarketing）」，透過限流、提高價格或減少促銷來暫時或永久降低需求，以維護服務品質。"
+      },
+      {
+        id: 33,
+        category: "需求狀態與八大行銷策略",
+        question: "政府有鑑於酒駕肇事嚴重危及社會民眾安全,對酒駕加強取締、加重刑責,此乃屬於哪一種行銷策略?",
+        options: {
+          A: "低行銷",
+          B: "反行銷",
+          C: "規則行銷",
+          D: "維持行銷"
+        },
+        answer: "B",
+        explanation: "面對有害身心或社會安全的「有害需求（Unwholesome Demand）」（如酒駕、菸毒），應採取「反行銷（Countermarketing）」，透過嚴刑峻法、恐懼訴求宣導或禁售來徹底消滅該需求。"
+      },
+      {
+        id: 34,
+        category: "需求狀態與八大行銷策略",
+        question: "某博物館舉辦特展吸引超額人潮參觀,為了維護服務品質,博物館進行流量管制,此乃屬於哪一種行銷策略?",
+        options: {
+          A: "低行銷",
+          B: "反行銷",
+          C: "規則行銷",
+          D: "維持行銷"
+        },
+        answer: "A",
+        explanation: "超額人潮屬於「過度需求（Overfull Demand）」，博物館並不是要消滅民眾看展的意願（非反行銷），而是透過流量管制調節入館人數以維持品質，屬於「低行銷（Demarketing）」。"
+      },
+      {
+        id: 35,
+        category: "需求狀態與八大行銷策略",
+        question: "某美白化妝品,到歐美開拓市場,發覺大多數歐美白人沒有美白需求,進而改變訴求推護膚保養化妝品,此乃屬於哪一種行銷策略?",
+        options: {
+          A: "轉換行銷",
+          B: "刺激行銷",
+          C: "開發行銷",
+          D: "維持行銷"
+        },
+        answer: "B",
+        explanation: "歐美白人原本對美白產品處於「無需求（No Demand / 零需求）」狀態（不感興趣或認為無關），行銷人員透過改變產品定位與訴求來激發購買意願，屬於「刺激行銷（Stimulational Marketing）」。"
+      },
+      {
+        id: 36,
+        category: "需求狀態與八大行銷策略",
+        question: "烘焙業推廣母親節買蛋糕慶祝,改變一般人的節慶消費習慣,此乃屬於哪一種行銷策略?",
+        options: {
+          A: "轉換行銷",
+          B: "刺激行銷",
+          C: "開發行銷",
+          D: "維持行銷"
+        },
+        answer: "B",
+        explanation: "原本一般人母親節並沒有吃蛋糕的習慣（屬於「無需求 / 零需求」），業者透過創造節慶儀式感來無中生有激發消費需求，屬於「刺激行銷（Stimulational Marketing）」。"
+      },
+      {
+        id: 37,
+        category: "需求狀態與八大行銷策略",
+        question: "食品業結合零售業將巧克力推廣為情人節代表性的禮品,此乃屬於哪一種行銷策略?",
+        options: {
+          A: "轉換行銷",
+          B: "刺激行銷",
+          C: "開發行銷",
+          D: "維持行銷"
+        },
+        answer: "B",
+        explanation: "將原本與情人節無關的商品塑造成節日必備禮品，屬於針對「無需求（No Demand）」狀態所採取的「刺激行銷（Stimulational Marketing）」。"
+      },
+      {
+        id: 38,
+        category: "需求狀態與八大行銷策略",
+        question: "「橘色商機」指50歲以上熟齡人口,其人生像進入秋天燦爛的楓葉般,這個年齡層的人口特徵是:有錢、空巢期、消費意願高、敢嘗新、善待自己;針對階層人口推廣保健商品、深度旅遊、高階網購……………,此乃屬於哪一種行銷策略?",
+        options: {
+          A: "轉換行銷",
+          B: "刺激行銷",
+          C: "開發行銷",
+          D: "維持行銷"
+        },
+        answer: "C",
+        explanation: "熟齡族群對高品質生活與保健有「潛在需求（Latent Demand）」，但過去市場上缺乏專門針對他們設計的精緻商品；企業針對此未被滿足的潛在渴望開發新商品與服務，屬於「開發行銷（Developmental Marketing）」。"
+      },
+      {
+        id: 39,
+        category: "需求狀態與八大行銷策略",
+        question: "愛之味鮮採番茄汁利用先進技術改變配方,讓番茄汁變好喝了,此乃屬於哪一種行銷策略?",
+        options: {
+          A: "轉換行銷",
+          B: "刺激行銷",
+          C: "開發行銷",
+          D: "維持行銷"
+        },
+        answer: "A",
+        explanation: "過去消費者因為覺得番茄汁有生澀菜味而排斥購買，屬於「負需求（Negative Demand）」；業者透過技術改良口味，扭轉消費者的負面態度轉為喜愛，屬於「轉換行銷（Conversional Marketing）」。"
+      },
+      {
+        id: 40,
+        category: "需求狀態與八大行銷策略",
+        question: "Gummy Bears 推出兒童維他命軟糖,讓排斥藥味的小朋友願意吃維他命,此乃屬於哪一種行銷策略?",
+        options: {
+          A: "轉換行銷",
+          B: "刺激行銷",
+          C: "開發行銷",
+          D: "維持行銷"
+        },
+        answer: "A",
+        explanation: "小朋友原本討厭、排斥吃藥味維他命，屬於「負需求（Negative Demand）」；將維他命做成軟糖形式消除排斥感，成功扭轉態度，屬於「轉換行銷（Conversional Marketing）」。"
+      },
+      {
+        id: 41,
+        category: "需求狀態與八大行銷策略",
+        question: "政府強力取締毒品,此乃屬於哪一種行銷策略?",
+        options: {
+          A: "轉換行銷",
+          B: "低行銷",
+          C: "反行銷",
+          D: "維持行銷"
+        },
+        answer: "C",
+        explanation: "毒品屬於危害個人與社會的「有害需求（Unwholesome Demand）」，政府透過強力查緝與宣導杜絕毒品流通，屬於「反行銷（Countermarketing）」。"
+      },
+      {
+        id: 42,
+        category: "市場哲學演進與行銷近視/遠視症",
+        question: "以下對市場哲學的演進敘述何者為非?",
+        options: {
+          A: "起始於生產觀念",
+          B: "銷售觀念在於雙贏",
+          C: "行銷觀念在於滿足消費者需求",
+          D: "現在強調社會行銷觀念"
+        },
+        answer: "B",
+        explanation: "「銷售觀念（Selling Concept）」是以賣方為中心，想盡辦法把既有的產品推銷出去，利害關係傾向「你輸我贏」的單次交易；真正追求顧客與企業「雙贏」的是「行銷觀念（Marketing Concept）」。"
+      },
+      {
+        id: 43,
+        category: "市場哲學演進與行銷近視/遠視症",
+        question: "OEM (Original Equipment Manufacturer)廠商是屬於下列哪一種市場哲學的演進觀念?",
+        options: {
+          A: "生產觀念",
+          B: "銷售觀念",
+          C: "行銷觀念",
+          D: "社會行銷觀念"
+        },
+        answer: "A",
+        explanation: "OEM（純代工製造）完全依照客戶規格進行大量、標準化生產，核心競爭力在於降低製造成本與提高生產效率，屬於「生產觀念（Production Concept）」。"
+      },
+      {
+        id: 44,
+        category: "市場哲學演進與行銷近視/遠視症",
+        question: "ODM (Original Design Manufacturer)廠商是屬於下列哪一種市場哲學的演進觀念?",
+        options: {
+          A: "生產觀念",
+          B: "產品觀念",
+          C: "銷售觀念",
+          D: "行銷觀念"
+        },
+        answer: "B",
+        explanation: "ODM（設計加工製造）具備自主研發與產品設計能力，透過提供更優異的產品功能與品質來吸引品牌商下單，屬於「產品觀念（Product Concept）」。"
+      },
+      {
+        id: 45,
+        category: "市場哲學演進與行銷近視/遠視症",
+        question: "OBM (Own Branding & Manufacturing)廠商是屬於下列哪一種市場哲學的演進觀念?",
+        options: {
+          A: "生產觀念",
+          B: "產品觀念",
+          C: "銷售觀念",
+          D: "行銷觀念"
+        },
+        answer: "D",
+        explanation: "OBM（自有品牌製造）必須直接面對終端市場，從消費者需求調查、產品開發、品牌定位到通路推廣全面整合，屬於「行銷觀念（Marketing Concept）」。"
+      },
+      {
+        id: 46,
+        category: "市場哲學演進與行銷近視/遠視症",
+        question: "以下對市場哲學的演進中「生產觀念」的敘述何者為非?",
+        options: {
+          A: "規模經濟",
+          B: "標準化生產",
+          C: "大量生產",
+          D: "重品質"
+        },
+        answer: "D",
+        explanation: "「生產觀念」強調大量生產、標準化作業與規模經濟，以達到「降低成本、價格低廉、隨處可得」的目標；而特別強調「重品質、重功能創新」的是「產品觀念」。"
+      },
+      {
+        id: 47,
+        category: "市場哲學演進與行銷近視/遠視症",
+        question: "以下對「銷售觀念」與「行銷觀念」的敘述何者為非?",
+        options: {
+          A: "銷售起始點在產品生產之後",
+          B: "行銷焦點在產品本身",
+          C: "行銷重心在市場",
+          D: "行銷比銷售更重視顧客關係"
+        },
+        answer: "B",
+        explanation: "「銷售觀念」的焦點在「產品本身」（先做出產品再想辦法賣掉）；而「行銷觀念」的焦點在於「顧客需求」（先了解顧客需要什麼再研發產品）。"
+      },
+      {
+        id: 48,
+        category: "市場哲學演進與行銷近視/遠視症",
+        question: "以下對「銷售觀念」與「行銷觀念」的敘述何者為非?",
+        options: {
+          A: "行銷起始點在產品生產之後",
+          B: "銷售焦點在產品本身",
+          C: "銷售重心在工廠",
+          D: "行銷手段在整合行銷"
+        },
+        answer: "A",
+        explanation: "「行銷觀念」的起始點在「產品生產之前」（必須先進行市場調查與需求界定，才進行產品研發與生產）；起始點在產品生產之後的是「銷售觀念」。"
+      },
+      {
+        id: 49,
+        category: "市場哲學演進與行銷近視/遠視症",
+        question: "以下對「銷售觀念」與「行銷觀念」的敘述何者為非?",
+        options: {
+          A: "行銷起始點在產品生產之前",
+          B: "銷售手段在推廣",
+          C: "銷售關鍵技術在需求界定",
+          D: "行銷利潤在顧客滿足"
+        },
+        answer: "C",
+        explanation: "「需求界定（市場調查與區隔）」是「行銷觀念」的關鍵技術；而「銷售觀念」的關鍵技術在於人員推銷與促銷推廣的「銷售技巧」。"
+      },
+      {
+        id: 50,
+        category: "市場哲學演進與行銷近視/遠視症",
+        question: "以下對「銷售觀念」與「行銷觀念」的敘述何者為非?",
+        options: {
+          A: "行銷強調重複交換",
+          B: "銷售利害關係在你輸我贏",
+          C: "銷售關鍵技術在銷售技巧",
+          D: "銷售比行銷更重視顧客關係"
+        },
+        answer: "D",
+        explanation: "銷售觀念著重單次交易的成交量，較忽略售後長期維繫；「行銷觀念」則強調透過顧客滿意創造忠誠度與重複購買，因此「行銷比銷售更重視顧客關係」。"
+      },
+      {
+        id: 51,
+        category: "市場哲學演進與行銷近視/遠視症",
+        question: "菲利普·科特勒(Kotler Philip)及辛赫(Ravi Singh)提出「企業經理人只在乎顧客需求,卻忽視了產品品質的重要性。」是指企業主對行銷有?",
+        options: {
+          A: "行銷遠視症",
+          B: "行銷近視",
+          C: "行銷大頭症",
+          D: "行銷偏視症"
+        },
+        answer: "A",
+        explanation: "科特勒與辛赫提出「行銷遠視症（Marketing Hyperopia）」，指企業過度沉迷於追逐顧客表面需求或宏大願景，卻忽略了產品本身的核心品質與基本功。"
+      },
+      {
+        id: 52,
+        category: "市場哲學演進與行銷近視/遠視症",
+        question: "台灣很多地方將當地特色的農產品,在未瞭解消費者的需求之下,一味地衍生成各種加工商品,並未因此而熱賣,此可謂患了?",
+        options: {
+          A: "行銷近視症",
+          B: "行銷遠視症",
+          C: "行銷大頭症",
+          D: "行銷偏視症"
+        },
+        answer: "A",
+        explanation: "只從自身擁有的農產品原料出發（產品導向思維），未先調查消費者真正的需求與偏好，導致商品滯銷，這正是典型的「行銷近視症（Marketing Myopia）」。"
+      },
+      {
+        id: 53,
+        category: "市場哲學演進與行銷近視/遠視症",
+        question: "行銷大師李維特(Theodore Levitt)提出「企業經理人僅重視當前的產品本身的議題,卻忽略顧客需求及其所追求的利益」,此稱之為?",
+        options: {
+          A: "行銷遠視症(marketing hyperopia)",
+          B: "行銷近視症(marketing myopia)",
+          C: "行銷 2.0",
+          D: "行銷 3.0"
+        },
+        answer: "B",
+        explanation: "哈佛商學院教授李維特（Theodore Levitt）在1960年提出「行銷近視症（Marketing Myopia）」，指出企業若將自身狹隘地定義在「賣特定產品」而非「滿足顧客背後的利益與需求」（例如鐵路公司以為自己在做火車生意而非運輸生意），最終將被市場淘汰。"
+      },
+      {
+        id: 54,
+        category: "市場哲學演進與行銷近視/遠視症",
+        question: "請問下列何者不屬於行銷可為消費者所創造的效用?",
+        options: {
+          A: "地點效用",
+          B: "資訊效用",
+          C: "價格效用",
+          D: "時間效用"
+        },
+        answer: "C",
+        explanation: "行銷學中為消費者創造的四大（或五大）效用包括：形式效用（Form Utility，由生產創造）、時間效用（Time Utility）、地點效用（Place Utility）、持有/所有權效用（Possession Utility）以及資訊效用（Information Utility），不包含「價格效用」。"
+      },
+      {
+        id: 55,
+        category: "市場哲學演進與行銷近視/遠視症",
+        question: "以下對行銷概念的敘述何者為非?",
+        options: {
+          A: "行銷管理亦可稱為顧客管理與需求管理",
+          B: "差異化與市場定位是行銷管理重要的議題",
+          C: "行銷可以創造顧客的需要",
+          D: "顧客關係的建立基礎在顧客價值與滿意度"
+        },
+        answer: "C",
+        explanation: "基本「需要（Need）」是人類與生俱來的生理或心理本能，行銷人員「不能創造需要」，行銷只能影響消費者的「慾求（Want）」並引導、刺激或管理「需求（Demand）」。"
+      }
+    ];
+
+    const CATEGORIES = [
+      "行銷定義與需要/慾求/需求",
+      "行銷時代演進與經營導向",
+      "社會/綠色/善因行銷",
+      "需求狀態與八大行銷策略",
+      "市場哲學演進與行銷近視/遠視症"
+    ];
+
+    // =========================================================================
+    // 2. 狀態管理與 LocalStorage 持久化
+    // =========================================================================
+    const STORAGE_KEY = "imc_cert_quiz_v1";
+
+    let appData = {
+      totalAnswered: 0,
+      totalCorrect: 0,
+      questionStats: {}, // { [qId]: { attempts: 0, correct: 0, lastResult: 'correct'|'wrong' } }
+      mistakes: {},      // { [qId]: { count: 1, addedAt: timestamp } }
+      examHistory: []    // [{ date, score, correct, total, durationSec }]
+    };
+
+    function loadAppData() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          appData = { ...appData, ...parsed };
+        }
+      } catch (e) {
+        console.error("讀取本機紀錄失敗:", e);
+      }
+      updateMistakeBadges();
+    }
+
+    function saveAppData() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+      } catch (e) {
+        console.error("儲存本機紀錄失敗:", e);
+      }
+      updateMistakeBadges();
+    }
+
+    // 記錄單題作答表現
+    function recordAnswer(qId, isCorrect) {
+      appData.totalAnswered += 1;
+      if (isCorrect) {
+        appData.totalCorrect += 1;
+      }
+
+      if (!appData.questionStats[qId]) {
+        appData.questionStats[qId] = { attempts: 0, correct: 0, lastResult: null };
+      }
+      appData.questionStats[qId].attempts += 1;
+      if (isCorrect) {
+        appData.questionStats[qId].correct += 1;
+        appData.questionStats[qId].lastResult = "correct";
+      } else {
+        appData.questionStats[qId].lastResult = "wrong";
+        addMistake(qId, true);
+      }
+      saveAppData();
+    }
+
+    function addMistake(qId, silent = false) {
+      if (!appData.mistakes[qId]) {
+        appData.mistakes[qId] = { count: 1, addedAt: Date.now() };
+      } else {
+        appData.mistakes[qId].count += 1;
+      }
+      saveAppData();
+      if (!silent) showToast(`已將第 ${qId} 題加入錯題本`);
+    }
+
+    function removeMistake(qId, silent = false) {
+      if (appData.mistakes[qId]) {
+        delete appData.mistakes[qId];
+        saveAppData();
+        if (!silent) showToast(`已將第 ${qId} 題移出錯題本`);
+      }
+    }
+
+    function updateMistakeBadges() {
+      const count = Object.keys(appData.mistakes).length;
+      document.getElementById("nav-mistake-badge").textContent = count;
+      document.getElementById("mobile-mistake-badge").textContent = count;
+      const headerBadge = document.getElementById("mistake-header-count");
+      if (headerBadge) headerBadge.textContent = `${count} 題`;
+    }
+
+    // =========================================================================
+    // 3. UI 通用工具（Toast 提示、Modal 確認框、Tab 切換）
+    // =========================================================================
+    let currentTab = "dashboard";
+
+    function showToast(message, type = "info") {
+      const container = document.getElementById("toast-container");
+      const el = document.createElement("div");
+      const bgClass = type === "error" ? "bg-brand-coral" : type === "success" ? "bg-emerald-600" : "bg-brand-ink";
+      el.className = `${bgClass} text-white px-4 py-2.5 rounded-xl shadow-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all duration-300 transform translate-y-2 opacity-0`;
+      el.textContent = message;
+      container.appendChild(el);
+
+      requestAnimationFrame(() => {
+        el.classList.remove("translate-y-2", "opacity-0");
+      });
+
+      setTimeout(() => {
+        el.classList.add("opacity-0", "translate-y-2");
+        setTimeout(() => el.remove(), 300);
+      }, 2400);
+    }
+
+    function showConfirmModal({ title, desc, confirmText = "確定", onConfirm }) {
+      const modal = document.getElementById("confirm-modal");
+      document.getElementById("modal-title").textContent = title;
+      document.getElementById("modal-desc").textContent = desc;
+      const confirmBtn = document.getElementById("modal-confirm-btn");
+      const cancelBtn = document.getElementById("modal-cancel-btn");
+      confirmBtn.textContent = confirmText;
+
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+
+      const close = () => {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+      };
+
+      cancelBtn.onclick = close;
+      confirmBtn.onclick = () => {
+        close();
+        if (onConfirm) onConfirm();
+      };
+    }
+
+    function switchTab(tabName) {
+      currentTab = tabName;
+      const views = ["dashboard", "practice", "exam", "mistakes", "bank"];
+      views.forEach(v => {
+        const el = document.getElementById(`view-${v}`);
+        if (v === tabName) {
+          el.classList.remove("hidden");
+        } else {
+          el.classList.add("hidden");
+        }
+      });
+
+      // 更新導航按鈕樣式
+      document.querySelectorAll(".nav-btn").forEach(btn => {
+        if (btn.dataset.tab === tabName) {
+          btn.className = "nav-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-sm font-extrabold transition-all bg-brand-electric text-white shadow-sm shadow-purple-200 flex items-center gap-1.5";
+        } else {
+          btn.className = "nav-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-sm font-bold transition-all text-slate-600 hover:bg-purple-50 hover:text-brand-electric flex items-center gap-1.5";
+        }
+      });
+
+      // 進入各分頁時刷新視圖
+      if (tabName === "dashboard") renderDashboard();
+      if (tabName === "practice") renderPracticeQuestion();
+      if (tabName === "mistakes") renderMistakesView();
+      if (tabName === "bank") renderQuestionBank();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function toggleQuestionGrid(drawerId) {
+      const el = document.getElementById(drawerId);
+      el.classList.toggle("hidden");
+    }
+
+    // =========================================================================
+    // 4. 儀表板與成績統計渲染
+    // =========================================================================
+    function renderDashboard() {
+      document.getElementById("stat-total-answered").textContent = appData.totalAnswered;
+      document.getElementById("stat-total-correct").textContent = appData.totalCorrect;
+      const uniqueCovered = Object.keys(appData.questionStats).length;
+      document.getElementById("stat-unique-covered").textContent = uniqueCovered;
+
+      const accuracy = appData.totalAnswered > 0
+        ? Math.round((appData.totalCorrect / appData.totalAnswered) * 100)
+        : 0;
+      document.getElementById("stat-accuracy").textContent = accuracy;
+      document.getElementById("stat-mistake-count").textContent = Object.keys(appData.mistakes).length;
+
+      if (appData.examHistory.length > 0) {
+        const best = Math.max(...appData.examHistory.map(h => h.score));
+        document.getElementById("stat-best-score").textContent = `${best} 分`;
+      } else {
+        document.getElementById("stat-best-score").textContent = "尚無紀錄";
+      }
+
+      // 渲染五大知識點掌握度
+      const catListEl = document.getElementById("category-stats-list");
+      catListEl.innerHTML = "";
+
+      CATEGORIES.forEach((cat, idx) => {
+        const catQuestions = QUESTIONS.filter(q => q.category === cat);
+        let attempts = 0;
+        let correct = 0;
+        catQuestions.forEach(q => {
+          const st = appData.questionStats[q.id];
+          if (st) {
+            attempts += st.attempts;
+            correct += st.correct;
+          }
+        });
+        const rate = attempts > 0 ? Math.round((correct / attempts) * 100) : 0;
+        const barColors = [
+          "from-brand-electric to-brand-magenta",
+          "from-brand-magenta to-brand-berry",
+          "from-brand-berry to-brand-coral",
+          "from-brand-coral to-brand-orange",
+          "from-brand-orange to-brand-electric"
+        ];
+
+        const item = document.createElement("div");
+        item.className = "space-y-1.5";
+        item.innerHTML = `
+          <div class="flex items-center justify-between text-xs sm:text-sm">
+            <span class="font-bold text-brand-ink truncate pr-2">${idx + 1}. ${cat}</span>
+            <span class="font-extrabold shrink-0 ${attempts === 0 ? 'text-slate-400' : rate >= 70 ? 'text-emerald-600' : 'text-brand-coral'}">
+              ${attempts === 0 ? '未作答' : `${rate}% (${correct}/${attempts})`}
+            </span>
+          </div>
+          <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+            <div class="h-full rounded-full bg-gradient-to-r ${barColors[idx % barColors.length]} transition-all duration-500" style="width: ${rate}%"></div>
+          </div>
+        `;
+        catListEl.appendChild(item);
+      });
+
+      // 渲染模擬測驗歷史紀錄
+      const histEl = document.getElementById("exam-history-list");
+      if (appData.examHistory.length === 0) {
+        histEl.innerHTML = `
+          <div class="h-48 flex flex-col items-center justify-center text-center p-4 rounded-2xl bg-slate-50 border border-dashed border-slate-200">
+            <span class="text-2xl mb-1">📋</span>
+            <p class="text-sm font-bold text-slate-500">尚未進行過模擬測驗</p>
+            <p class="text-xs text-slate-400 mt-1">點擊上方「進入模擬測驗」檢驗實力吧！</p>
+          </div>
+        `;
+      } else {
+        histEl.innerHTML = appData.examHistory.slice(0, 10).map(h => {
+          const passed = h.score >= 70;
+          const mins = Math.floor(h.durationSec / 60);
+          const secs = h.durationSec % 60;
+          return `
+            <div class="flex items-center justify-between p-3 rounded-2xl border ${passed ? 'border-emerald-100 bg-emerald-50/40' : 'border-red-100 bg-red-50/40'}">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="text-base font-black ${passed ? 'text-emerald-600' : 'text-brand-coral'}">${h.score} 分</span>
+                  <span class="px-2 py-0.5 rounded-md text-[11px] font-extrabold ${passed ? 'bg-emerald-100 text-emerald-700' : 'bg-brand-coral/15 text-brand-coral'}">
+                    ${passed ? '及格' : '未達標'}
+                  </span>
+                </div>
+                <div class="text-[11px] text-slate-400 mt-0.5">${h.date} ｜ 答對 ${h.correct}/${h.total} 題</div>
+              </div>
+              <div class="text-xs font-mono font-bold text-slate-500">
+                ⏱️ ${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+    }
+
+    function confirmResetStats() {
+      showConfirmModal({
+        title: "重置所有學習統計？",
+        desc: "這將清除您的累計作答次數、各單元正確率與模擬考歷史成績（錯題本可獨立保留或另外清除）。確定要重置嗎？",
+        confirmText: "確定重置",
+        onConfirm: () => {
+          appData.totalAnswered = 0;
+          appData.totalCorrect = 0;
+          appData.questionStats = {};
+          appData.examHistory = [];
+          saveAppData();
+          renderDashboard();
+          showToast("已重置統計數據", "success");
+        }
+      });
+    }
+
+    // =========================================================================
+    // 5. 練習模式 (Practice Mode)
+    // =========================================================================
+    let practiceOrder = "sequential"; // 'sequential' | 'random'
+    let practiceQueue = QUESTIONS.map((_, idx) => idx);
+    let practiceIndex = 0;
+    let practiceSelectedOption = null; // 當前題目已選選項
+
+    function startPracticeMode(order) {
+      setPracticeOrder(order);
+      switchTab("practice");
+    }
+
+    function setPracticeOrder(order) {
+      practiceOrder = order;
+      if (order === "sequential") {
+        practiceQueue = QUESTIONS.map((_, idx) => idx);
+      } else {
+        practiceQueue = QUESTIONS.map((_, idx) => idx).sort(() => Math.random() - 0.5);
+      }
+      practiceIndex = 0;
+      practiceSelectedOption = null;
+      updatePracticeOrderButtons();
+      renderPracticeQuestion();
+    }
+
+    function updatePracticeOrderButtons() {
+      const seqBtn = document.getElementById("btn-mode-seq");
+      const rndBtn = document.getElementById("btn-mode-rnd");
+      if (practiceOrder === "sequential") {
+        seqBtn.className = "px-3.5 py-2 rounded-xl text-xs sm:text-sm font-extrabold bg-brand-electric text-white shadow-xs transition";
+        rndBtn.className = "px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition";
+      } else {
+        rndBtn.className = "px-3.5 py-2 rounded-xl text-xs sm:text-sm font-extrabold bg-brand-magenta text-white shadow-xs transition";
+        seqBtn.className = "px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition";
+      }
+    }
+
+    function renderPracticeQuestion() {
+      updatePracticeOrderButtons();
+      const qObj = QUESTIONS[practiceQueue[practiceIndex]];
+
+      // 進度文字與進度條
+      document.getElementById("practice-progress-text").textContent = `${practiceIndex + 1} / ${QUESTIONS.length}`;
+      const pct = ((practiceIndex + 1) / QUESTIONS.length) * 100;
+      document.getElementById("practice-progress-bar").style.width = `${pct}%`;
+
+      // 題號與分類
+      document.getElementById("practice-q-badge").textContent = `第 ${qObj.id} 題`;
+      document.getElementById("practice-q-category").textContent = qObj.category;
+      document.getElementById("practice-q-text").textContent = qObj.question;
+
+      // 更新書籤（錯題本）按鈕狀態
+      updatePracticeBookmarkUI(qObj.id);
+
+      // 渲染選項
+      const optsContainer = document.getElementById("practice-options");
+      optsContainer.innerHTML = "";
+      ["A", "B", "C", "D"].forEach(key => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.onclick = () => handlePracticeSelect(key);
+
+        let baseStyle = "w-full text-left p-4 rounded-2xl border-2 transition-all flex items-start gap-3.5 group ";
+        let badgeStyle = "w-8 h-8 rounded-xl flex items-center justify-center font-black text-sm shrink-0 transition-colors ";
+
+        if (!practiceSelectedOption) {
+          baseStyle += "border-slate-200 hover:border-brand-electric hover:bg-purple-50/50 cursor-pointer";
+          badgeStyle += "bg-slate-100 text-slate-600 group-hover:bg-brand-electric group-hover:text-white";
+        } else {
+          // 已作答狀態
+          if (key === qObj.answer) {
+            baseStyle += "border-emerald-500 bg-emerald-50/80 text-emerald-950";
+            badgeStyle += "bg-emerald-500 text-white";
+          } else if (key === practiceSelectedOption && key !== qObj.answer) {
+            baseStyle += "border-brand-coral bg-red-50/80 text-red-950";
+            badgeStyle += "bg-brand-coral text-white";
+          } else {
+            baseStyle += "border-slate-100 bg-slate-50/50 text-slate-400 opacity-75";
+            badgeStyle += "bg-slate-100 text-slate-400";
+          }
+        }
+
+        btn.className = baseStyle;
+        btn.innerHTML = `
+          <span class="${badgeStyle}">${key}</span>
+          <span class="text-sm sm:text-base font-medium leading-relaxed pt-0.5">${qObj.options[key]}</span>
+        `;
+        optsContainer.appendChild(btn);
+      });
+
+      // 解析框顯示控制
+      const expBox = document.getElementById("practice-explanation-box");
+      if (practiceSelectedOption) {
+        const isCorrect = practiceSelectedOption === qObj.answer;
+        const resBadge = document.getElementById("practice-result-badge");
+        resBadge.textContent = isCorrect ? "✓ 答對了！" : "✕ 答錯了（已自動收錄至錯題本）";
+        resBadge.className = `px-2.5 py-0.5 rounded-lg text-xs font-black text-white ${isCorrect ? "bg-emerald-600" : "bg-brand-coral"}`;
+        document.getElementById("practice-correct-ans").textContent = qObj.answer;
+        document.getElementById("practice-explanation-text").textContent = qObj.explanation;
+        expBox.classList.remove("hidden");
+      } else {
+        expBox.classList.add("hidden");
+      }
+
+      renderPracticeGrid();
+    }
+
+    function handlePracticeSelect(optionKey) {
+      if (practiceSelectedOption) return; // 防止重複計分
+      practiceSelectedOption = optionKey;
+      const qObj = QUESTIONS[practiceQueue[practiceIndex]];
+      const isCorrect = optionKey === qObj.answer;
+      recordAnswer(qObj.id, isCorrect);
+      renderPracticeQuestion();
+    }
+
+    function nextPracticeQuestion() {
+      if (practiceIndex < QUESTIONS.length - 1) {
+        practiceIndex += 1;
+        practiceSelectedOption = null;
+        renderPracticeQuestion();
+      } else {
+        showToast("已經是最後一題囉！", "success");
+      }
+    }
+
+    function prevPracticeQuestion() {
+      if (practiceIndex > 0) {
+        practiceIndex -= 1;
+        practiceSelectedOption = null;
+        renderPracticeQuestion();
+      } else {
+        showToast("已經是第一題囉！");
+      }
+    }
+
+    function toggleCurrentBookmark() {
+      const qObj = QUESTIONS[practiceQueue[practiceIndex]];
+      if (appData.mistakes[qObj.id]) {
+        removeMistake(qObj.id);
+      } else {
+        addMistake(qObj.id);
+      }
+      updatePracticeBookmarkUI(qObj.id);
+    }
+
+    function updatePracticeBookmarkUI(qId) {
+      const btn = document.getElementById("practice-bookmark-btn");
+      const icon = document.getElementById("practice-bookmark-icon");
+      const text = document.getElementById("practice-bookmark-text");
+      const isBookmarked = Boolean(appData.mistakes[qId]);
+
+      if (isBookmarked) {
+        btn.className = "px-3.5 py-1.5 rounded-xl border border-brand-coral bg-brand-coral/10 text-brand-coral text-xs sm:text-sm font-bold flex items-center gap-1.5 transition";
+        icon.textContent = "★";
+        text.textContent = "已在錯題本中";
+      } else {
+        btn.className = "px-3.5 py-1.5 rounded-xl border border-slate-200 hover:border-brand-coral text-slate-600 hover:text-brand-coral text-xs sm:text-sm font-bold flex items-center gap-1.5 transition";
+        icon.textContent = "☆";
+        text.textContent = "加入錯題本";
+      }
+    }
+
+    function renderPracticeGrid() {
+      const grid = document.getElementById("practice-number-grid");
+      grid.innerHTML = "";
+      practiceQueue.forEach((qIdx, queuePos) => {
+        const q = QUESTIONS[qIdx];
+        const st = appData.questionStats[q.id];
+        const isCurrent = queuePos === practiceIndex;
+
+        let cls = "py-1.5 rounded-lg text-xs font-bold border transition ";
+        if (isCurrent) {
+          cls += "border-2 border-brand-electric ring-2 ring-brand-electric/30 ";
+        } else {
+          cls += "border-slate-200 ";
+        }
+
+        if (st?.lastResult === "correct") {
+          cls += "bg-emerald-100 text-emerald-800";
+        } else if (st?.lastResult === "wrong") {
+          cls += "bg-red-100 text-brand-coral";
+        } else {
+          cls += "bg-white text-slate-600 hover:bg-purple-50";
+        }
+
+        const btn = document.createElement("button");
+        btn.className = cls;
+        btn.textContent = q.id;
+        btn.onclick = () => {
+          practiceIndex = queuePos;
+          practiceSelectedOption = null;
+          renderPracticeQuestion();
+        };
+        grid.appendChild(btn);
+      });
+    }
+
+    // =========================================================================
+    // 6. 模擬測驗模式 (Mock Exam Mode)
+    // =========================================================================
+    let examConfigCount = 20;
+    let examState = {
+      questions: [],
+      userAnswers: {}, // { [idx]: 'A'|'B'|'C'|'D' }
+      flagged: {},     // { [idx]: true }
+      currentIndex: 0,
+      timerEnabled: true,
+      remainingSec: 1200,
+      totalSec: 1200,
+      timerInterval: null
+    };
+
+    function selectExamCount(count) {
+      examConfigCount = count;
+      document.querySelectorAll(".exam-count-btn").forEach(btn => {
+        if (Number(btn.dataset.examCount) === count) {
+          btn.className = "exam-count-btn py-3.5 rounded-2xl border-2 border-brand-electric bg-brand-electric/10 text-brand-electric font-extrabold text-sm transition";
+        } else {
+          btn.className = "exam-count-btn py-3.5 rounded-2xl border-2 border-slate-200 text-slate-600 hover:border-purple-200 font-bold text-sm transition";
+        }
+      });
+    }
+
+    function startMockExam() {
+      const shuffled = [...QUESTIONS].sort(() => Math.random() - 0.5).slice(0, examConfigCount);
+      const timerEnabled = document.getElementById("exam-timer-toggle").checked;
+      const totalSec = examConfigCount * 60;
+
+      examState = {
+        questions: shuffled,
+        userAnswers: {},
+        flagged: {},
+        currentIndex: 0,
+        timerEnabled,
+        remainingSec: totalSec,
+        totalSec,
+        timerInterval: null
+      };
+
+      document.getElementById("exam-setup-panel").classList.add("hidden");
+      document.getElementById("exam-result-panel").classList.add("hidden");
+      document.getElementById("exam-active-panel").classList.remove("hidden");
+
+      document.getElementById("exam-total-num").textContent = examConfigCount;
+      document.getElementById("exam-total-num-2").textContent = examConfigCount;
+
+      const timerBox = document.getElementById("exam-timer-box");
+      if (timerEnabled) {
+        timerBox.classList.remove("hidden");
+        updateExamTimerDisplay();
+        examState.timerInterval = setInterval(() => {
+          examState.remainingSec -= 1;
+          updateExamTimerDisplay();
+          if (examState.remainingSec <= 0) {
+            clearInterval(examState.timerInterval);
+            showToast("測驗時間到，系統已自動交卷！", "error");
+            submitMockExam();
+          }
+        }, 1000);
+      } else {
+        timerBox.classList.add("hidden");
+      }
+
+      renderExamQuestion();
+    }
+
+    function updateExamTimerDisplay() {
+      const mins = Math.floor(Math.max(0, examState.remainingSec) / 60);
+      const secs = Math.max(0, examState.remainingSec) % 60;
+      document.getElementById("exam-timer-display").textContent =
+        `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+    }
+
+    function renderExamQuestion() {
+      const idx = examState.currentIndex;
+      const qObj = examState.questions[idx];
+      const chosen = examState.userAnswers[idx];
+
+      document.getElementById("exam-curr-num").textContent = idx + 1;
+      document.getElementById("exam-q-orig-id").textContent = `題庫原題號 #${qObj.id} ｜ ${qObj.category}`;
+      document.getElementById("exam-q-text").textContent = qObj.question;
+
+      const answeredCount = Object.keys(examState.userAnswers).length;
+      document.getElementById("exam-answered-count").textContent = answeredCount;
+
+      // 標記按鈕狀態
+      const flagBtn = document.getElementById("exam-flag-btn");
+      if (examState.flagged[idx]) {
+        flagBtn.className = "px-3 py-1.5 rounded-xl border border-brand-orange bg-brand-orange/15 text-brand-orange text-xs font-extrabold transition";
+        flagBtn.textContent = "🚩 已標記不確定";
+      } else {
+        flagBtn.className = "px-3 py-1.5 rounded-xl border border-slate-200 text-slate-500 hover:border-brand-orange hover:text-brand-orange text-xs font-bold transition";
+        flagBtn.textContent = "🏳️ 標記不確定";
+      }
+
+      // 渲染四個選項
+      const optsEl = document.getElementById("exam-options");
+      optsEl.innerHTML = "";
+      ["A", "B", "C", "D"].forEach(key => {
+        const isSelected = chosen === key;
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.onclick = () => {
+          examState.userAnswers[idx] = key;
+          renderExamQuestion();
+        };
+        btn.className = `w-full text-left p-4 rounded-2xl border-2 transition-all flex items-start gap-3.5 ${
+          isSelected
+            ? "border-brand-electric bg-brand-electric/10 text-brand-ink shadow-xs"
+            : "border-slate-200 hover:border-purple-300 bg-white text-slate-700"
+        }`;
+        btn.innerHTML = `
+          <span class="w-8 h-8 rounded-xl flex items-center justify-center font-black text-sm shrink-0 ${
+            isSelected ? "bg-brand-electric text-white" : "bg-slate-100 text-slate-600"
+          }">${key}</span>
+          <span class="text-sm sm:text-base font-medium leading-relaxed pt-0.5">${qObj.options[key]}</span>
+        `;
+        optsEl.appendChild(btn);
+      });
+
+      // 最後一題按鈕提示
+      const nextBtn = document.getElementById("exam-next-btn");
+      if (idx === examState.questions.length - 1) {
+        nextBtn.textContent = "完成並交卷 ✓";
+        nextBtn.className = "px-6 py-3 rounded-xl bg-brand-orange text-white font-extrabold text-sm shadow-md transition";
+      } else {
+        nextBtn.textContent = "下一題 →";
+        nextBtn.className = "px-6 py-3 rounded-xl bg-brand-electric text-white font-extrabold text-sm shadow-md transition";
+      }
+
+      renderExamGrid();
+    }
+
+    function renderExamGrid() {
+      const grid = document.getElementById("exam-number-grid");
+      grid.innerHTML = "";
+      examState.questions.forEach((_, idx) => {
+        const isCurr = idx === examState.currentIndex;
+        const isAns = Boolean(examState.userAnswers[idx]);
+        const isFlag = Boolean(examState.flagged[idx]);
+
+        let cls = "py-1.5 rounded-lg text-xs font-extrabold border transition ";
+        if (isCurr) cls += "ring-2 ring-brand-magenta ";
+        if (isFlag) cls += "border-2 border-brand-orange ";
+        else cls += "border-slate-200 ";
+
+        if (isAns) cls += "bg-brand-electric text-white";
+        else cls += "bg-white text-slate-600 hover:bg-purple-50";
+
+        const btn = document.createElement("button");
+        btn.className = cls;
+        btn.textContent = idx + 1;
+        btn.onclick = () => {
+          examState.currentIndex = idx;
+          renderExamQuestion();
+        };
+        grid.appendChild(btn);
+      });
+    }
+
+    function toggleExamFlag() {
+      const idx = examState.currentIndex;
+      if (examState.flagged[idx]) {
+        delete examState.flagged[idx];
+      } else {
+        examState.flagged[idx] = true;
+      }
+      renderExamQuestion();
+    }
+
+    function prevExamQuestion() {
+      if (examState.currentIndex > 0) {
+        examState.currentIndex -= 1;
+        renderExamQuestion();
+      }
+    }
+
+    function nextExamQuestion() {
+      if (examState.currentIndex < examState.questions.length - 1) {
+        examState.currentIndex += 1;
+        renderExamQuestion();
+      } else {
+        confirmSubmitExam();
+      }
+    }
+
+    function confirmSubmitExam() {
+      const total = examState.questions.length;
+      const answered = Object.keys(examState.userAnswers).length;
+      const unanswered = total - answered;
+      const msg = unanswered > 0
+        ? `您還有 ${unanswered} 題尚未作答！確定現在就要交卷計分嗎？`
+        : "您已完成全部題目，確定要交卷並查看成績與解析嗎？";
+
+      showConfirmModal({
+        title: "確認交卷？",
+        desc: msg,
+        confirmText: "立即交卷",
+        onConfirm: submitMockExam
+      });
+    }
+
+    function submitMockExam() {
+      if (examState.timerInterval) {
+        clearInterval(examState.timerInterval);
+      }
+
+      const total = examState.questions.length;
+      let correctCount = 0;
+
+      examState.questions.forEach((qObj, idx) => {
+        const userAns = examState.userAnswers[idx];
+        const isCorrect = userAns === qObj.answer;
+        if (isCorrect) correctCount += 1;
+        recordAnswer(qObj.id, isCorrect);
+      });
+
+      const score = Math.round((correctCount / total) * 100);
+      const durationSec = examState.timerEnabled
+        ? (examState.totalSec - Math.max(0, examState.remainingSec))
+        : 0;
+
+      // 儲存模擬考歷史紀錄
+      const now = new Date();
+      const dateStr = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      appData.examHistory.unshift({
+        date: dateStr,
+        score,
+        correct: correctCount,
+        total,
+        durationSec
+      });
+      saveAppData();
+
+      // 切換至成績檢討畫面
+      document.getElementById("exam-active-panel").classList.add("hidden");
+      document.getElementById("exam-result-panel").classList.remove("hidden");
+
+      const passed = score >= 70;
+      const passBadge = document.getElementById("exam-pass-badge");
+      passBadge.textContent = passed ? "🎉 恭喜通過 70 分及格標準！" : "💪 差一點點，再複習一下錯題吧！";
+      passBadge.className = `inline-block px-4 py-1.5 rounded-full text-sm font-black mb-3 ${
+        passed ? "bg-emerald-100 text-emerald-700" : "bg-brand-coral/15 text-brand-coral"
+      }`;
+
+      document.getElementById("exam-final-score").textContent = score;
+      document.getElementById("exam-correct-total").textContent = correctCount;
+      document.getElementById("exam-question-total").textContent = total;
+      const mins = Math.floor(durationSec / 60);
+      const secs = durationSec % 60;
+      document.getElementById("exam-time-used").textContent = examState.timerEnabled
+        ? `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`
+        : "不限時";
+
+      renderExamReviewList("all");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function renderExamReviewList(filter) {
+      const btnAll = document.getElementById("review-filter-all");
+      const btnWrong = document.getElementById("review-filter-wrong");
+      if (filter === "all") {
+        btnAll.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-brand-electric text-white";
+        btnWrong.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-600";
+      } else {
+        btnWrong.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-brand-coral text-white";
+        btnAll.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-600";
+      }
+
+      const container = document.getElementById("exam-review-list");
+      container.innerHTML = "";
+
+      const items = examState.questions
+        .map((qObj, idx) => ({ qObj, idx, userAns: examState.userAnswers[idx] }))
+        .filter(item => filter === "all" || item.userAns !== item.qObj.answer);
+
+      if (items.length === 0) {
+        container.innerHTML = `<div class="bg-white rounded-2xl p-8 text-center text-sm font-bold text-emerald-600 border border-emerald-100">太神啦！本次測驗完全沒有錯題！</div>`;
+        return;
+      }
+
+      items.forEach(({ qObj, idx, userAns }) => {
+        const isCorrect = userAns === qObj.answer;
+        const card = document.createElement("div");
+        card.className = `bg-white rounded-2xl p-5 sm:p-6 border-2 ${isCorrect ? "border-emerald-100" : "border-brand-coral/30"}`;
+        card.innerHTML = `
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-lg text-xs font-black text-white ${isCorrect ? "bg-emerald-600" : "bg-brand-coral"}">
+                ${isCorrect ? "✓ 答對" : "✕ 答錯"}
+              </span>
+              <span class="text-xs font-bold text-slate-500">測驗第 ${idx + 1} 題（題庫 #${qObj.id}）</span>
+            </div>
+            <span class="text-xs font-extrabold text-brand-electric">
+              您的作答：${userAns || "未作答"} ｜ 正確答案：${qObj.answer}
+            </span>
+          </div>
+          <h4 class="text-base font-extrabold text-brand-ink mb-3">${qObj.question}</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4 text-xs sm:text-sm">
+            ${["A", "B", "C", "D"].map(k => {
+              let optCls = "p-2.5 rounded-xl border ";
+              if (k === qObj.answer) optCls += "border-emerald-400 bg-emerald-50 font-bold text-emerald-900";
+              else if (k === userAns) optCls += "border-brand-coral bg-red-50 font-bold text-red-900";
+              else optCls += "border-slate-100 text-slate-600";
+              return `<div class="${optCls}">(${k}) ${qObj.options[k]}</div>`;
+            }).join("")}
+          </div>
+          <div class="p-3.5 rounded-xl bg-orange-50/70 border-l-4 border-brand-orange text-xs sm:text-sm text-slate-700 leading-relaxed">
+            <strong class="text-brand-orange">解析：</strong>${qObj.explanation}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function resetExamToSetup() {
+      document.getElementById("exam-result-panel").classList.add("hidden");
+      document.getElementById("exam-active-panel").classList.add("hidden");
+      document.getElementById("exam-setup-panel").classList.remove("hidden");
+    }
+
+    // =========================================================================
+    // 7. 錯題練習模式 (Mistake Review Mode)
+    // =========================================================================
+    let drillList = [];
+    let drillIndex = 0;
+    let drillChosen = null;
+
+    function renderMistakesView() {
+      const mistakeIds = Object.keys(appData.mistakes).map(Number).sort((a, b) => a - b);
+      updateMistakeBadges();
+
+      const container = document.getElementById("mistake-list-container");
+      const startBtn = document.getElementById("btn-start-mistake-drill");
+
+      if (mistakeIds.length === 0) {
+        startBtn.disabled = true;
+        startBtn.classList.add("opacity-50", "cursor-not-allowed");
+        document.getElementById("mistake-drill-box").classList.add("hidden");
+        container.innerHTML = `
+          <div class="bg-white rounded-3xl p-10 text-center border border-purple-100">
+            <div class="text-4xl mb-3">🌟</div>
+            <h3 class="text-lg font-extrabold text-brand-ink">目前錯題本空空如也！</h3>
+            <p class="text-sm text-slate-500 mt-1 mb-5">在練習或模擬測驗中答錯的題目會自動出現在這裡，也可以在練習時手動點擊星號加入。</p>
+            <button onclick="switchTab('practice')" class="px-5 py-2.5 rounded-xl bg-brand-electric text-white font-bold text-sm">
+              前往刷題練習 →
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      startBtn.disabled = false;
+      startBtn.classList.remove("opacity-50", "cursor-not-allowed");
+
+      container.innerHTML = mistakeIds.map(qId => {
+        const qObj = QUESTIONS.find(q => q.id === qId);
+        const info = appData.mistakes[qId];
+        return `
+          <div class="bg-white rounded-2xl p-5 sm:p-6 border border-purple-100 shadow-xs">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <div class="flex items-center gap-2">
+                <span class="px-2.5 py-1 rounded-lg bg-brand-electric text-white text-xs font-black">第 ${qObj.id} 題</span>
+                <span class="px-2.5 py-1 rounded-lg bg-brand-coral/10 text-brand-coral text-xs font-extrabold">累計答錯 ${info.count} 次</span>
+                <span class="hidden sm:inline text-xs text-slate-400 font-medium">${qObj.category}</span>
+              </div>
+              <button onclick="handleRemoveMistakeFromList(${qObj.id})" class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 text-xs font-bold transition">
+                ✓ 移出錯題本
+              </button>
+            </div>
+            <h3 class="text-base font-extrabold text-brand-ink mb-3">${qObj.question}</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm mb-3">
+              ${["A", "B", "C", "D"].map(k => `
+                <div class="p-2.5 rounded-xl border ${k === qObj.answer ? 'border-emerald-400 bg-emerald-50 font-bold text-emerald-900' : 'border-slate-100 text-slate-600'}">
+                  (${k}) ${qObj.options[k]}
+                </div>
+              `).join("")}
+            </div>
+            <div class="p-3.5 rounded-xl bg-orange-50/70 border-l-4 border-brand-orange text-xs sm:text-sm text-slate-700 leading-relaxed">
+              <strong class="text-brand-orange">正解 (${qObj.answer}) 解析：</strong>${qObj.explanation}
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function handleRemoveMistakeFromList(qId) {
+      removeMistake(qId);
+      renderMistakesView();
+    }
+
+    function confirmClearMistakes() {
+      const count = Object.keys(appData.mistakes).length;
+      if (count === 0) {
+        showToast("目前沒有錯題可清空");
+        return;
+      }
+      showConfirmModal({
+        title: "清空全部錯題？",
+        desc: `確定要移除錯題本中的全部 ${count} 道題目嗎？此操作無法復原。`,
+        confirmText: "確定清空",
+        onConfirm: () => {
+          appData.mistakes = {};
+          saveAppData();
+          renderMistakesView();
+          showToast("已清空錯題本", "success");
+        }
+      });
+    }
+
+    function startMistakeDrill() {
+      const mistakeIds = Object.keys(appData.mistakes).map(Number).sort((a, b) => a - b);
+      if (mistakeIds.length === 0) return;
+
+      drillList = mistakeIds;
+      drillIndex = 0;
+      drillChosen = null;
+
+      document.getElementById("mistake-drill-box").classList.remove("hidden");
+      renderDrillQuestion();
+      document.getElementById("mistake-drill-box").scrollIntoView({ behavior: "smooth" });
+    }
+
+    function closeMistakeDrill() {
+      document.getElementById("mistake-drill-box").classList.add("hidden");
+    }
+
+    function renderDrillQuestion() {
+      if (drillList.length === 0) {
+        closeMistakeDrill();
+        renderMistakesView();
+        return;
+      }
+      if (drillIndex >= drillList.length) drillIndex = drillList.length - 1;
+
+      const qId = drillList[drillIndex];
+      const qObj = QUESTIONS.find(q => q.id === qId);
+      const count = appData.mistakes[qId]?.count || 1;
+
+      document.getElementById("drill-progress").textContent = `${drillIndex + 1} / ${drillList.length}`;
+      document.getElementById("drill-q-id").textContent = `題庫第 ${qObj.id} 題`;
+      document.getElementById("drill-wrong-times").textContent = `累計答錯 ${count} 次`;
+      document.getElementById("drill-q-text").textContent = qObj.question;
+
+      const optsEl = document.getElementById("drill-options");
+      optsEl.innerHTML = "";
+      ["A", "B", "C", "D"].forEach(key => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.onclick = () => {
+          if (drillChosen) return;
+          drillChosen = key;
+          const isCorrect = key === qObj.answer;
+          recordAnswer(qObj.id, isCorrect);
+          renderDrillQuestion();
+          renderMistakesView();
+        };
+
+        let cls = "w-full text-left p-3.5 rounded-2xl border-2 transition flex items-start gap-3 ";
+        if (!drillChosen) {
+          cls += "border-slate-200 hover:border-brand-coral hover:bg-red-50/40";
+        } else if (key === qObj.answer) {
+          cls += "border-emerald-500 bg-emerald-50 font-bold text-emerald-950";
+        } else if (key === drillChosen) {
+          cls += "border-brand-coral bg-red-50 text-red-950";
+        } else {
+          cls += "border-slate-100 opacity-60";
+        }
+
+        btn.className = cls;
+        btn.innerHTML = `
+          <span class="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center font-black text-xs shrink-0">${key}</span>
+          <span class="text-sm font-medium pt-0.5">${qObj.options[key]}</span>
+        `;
+        optsEl.appendChild(btn);
+      });
+
+      const fb = document.getElementById("drill-feedback");
+      if (drillChosen) {
+        const isCorrect = drillChosen === qObj.answer;
+        const lbl = document.getElementById("drill-result-label");
+        lbl.textContent = isCorrect ? "🎉 太棒了，這次答對了！" : `✕ 還是答錯囉，正解是 (${qObj.answer})`;
+        lbl.className = `text-sm font-black ${isCorrect ? "text-emerald-600" : "text-brand-coral"}`;
+        document.getElementById("drill-explanation").textContent = qObj.explanation;
+        fb.classList.remove("hidden");
+      } else {
+        fb.classList.add("hidden");
+      }
+    }
+
+    function removeCurrentDrillFromMistakes() {
+      const qId = drillList[drillIndex];
+      removeMistake(qId);
+      drillList.splice(drillIndex, 1);
+      drillChosen = null;
+      renderMistakesView();
+      renderDrillQuestion();
+    }
+
+    function nextDrillQuestion() {
+      if (drillIndex < drillList.length - 1) {
+        drillIndex += 1;
+        drillChosen = null;
+        renderDrillQuestion();
+      } else {
+        showToast("已練習完最後一題錯題！", "success");
+      }
+    }
+
+    function prevDrillQuestion() {
+      if (drillIndex > 0) {
+        drillIndex -= 1;
+        drillChosen = null;
+        renderDrillQuestion();
+      }
+    }
+
+    // =========================================================================
+    // 8. 全題庫瀏覽與搜尋 (All Questions Bank)
+    // =========================================================================
+    let showBankAnswers = true;
+
+    function toggleBankAnswers() {
+      showBankAnswers = !showBankAnswers;
+      const btn = document.getElementById("toggle-bank-answers-btn");
+      btn.textContent = showBankAnswers ? "👁️ 隱藏答案與解析" : "👁️‍🗨️ 顯示答案與解析";
+      renderQuestionBank();
+    }
+
+    function renderQuestionBank() {
+      const keyword = document.getElementById("bank-search-input").value.trim().toLowerCase();
+      const catFilter = document.getElementById("bank-category-filter").value;
+
+      const filtered = QUESTIONS.filter(q => {
+        const matchCat = catFilter === "all" || q.category === catFilter;
+        const fullText = `${q.id} ${q.question} ${q.options.A} ${q.options.B} ${q.options.C} ${q.options.D} ${q.explanation}`.toLowerCase();
+        const matchKey = !keyword || fullText.includes(keyword);
+        return matchCat && matchKey;
+      });
+
+      document.getElementById("bank-result-count").textContent = filtered.length;
+      const container = document.getElementById("bank-list-container");
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="bg-white rounded-2xl p-8 text-center text-sm font-bold text-slate-400 border border-purple-100">找不到符合「${keyword}」的題目，請嘗試其他關鍵字。</div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(q => {
+        const isMistake = Boolean(appData.mistakes[q.id]);
+        return `
+          <div class="bg-white rounded-2xl p-5 sm:p-6 border border-purple-100 shadow-xs">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <div class="flex items-center gap-2">
+                <span class="px-2.5 py-1 rounded-lg bg-brand-electric text-white text-xs font-black">第 ${q.id} 題</span>
+                <span class="px-2.5 py-1 rounded-lg bg-purple-50 text-brand-electric text-xs font-bold">${q.category}</span>
+              </div>
+              <button onclick="toggleBankBookmark(${q.id})" class="text-xs font-bold px-2.5 py-1 rounded-lg border transition ${isMistake ? 'border-brand-coral bg-brand-coral/10 text-brand-coral' : 'border-slate-200 text-slate-500 hover:border-brand-coral'}">
+                ${isMistake ? '★ 已在錯題本' : '☆ 加入錯題本'}
+              </button>
+            </div>
+            <h3 class="text-base sm:text-lg font-extrabold text-brand-ink mb-3">${q.question}</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm ${showBankAnswers ? 'mb-4' : ''}">
+              ${["A", "B", "C", "D"].map(k => {
+                const highlight = showBankAnswers && k === q.answer;
+                return `
+                  <div class="p-3 rounded-xl border ${highlight ? 'border-emerald-500 bg-emerald-50/90 font-bold text-emerald-950' : 'border-slate-100 bg-slate-50/50 text-slate-700'}">
+                    <span class="font-black mr-1.5 ${highlight ? 'text-emerald-600' : 'text-slate-400'}">(${k})</span>${q.options[k]}
+                  </div>
+                `;
+              }).join("")}
+            </div>
+            ${showBankAnswers ? `
+              <div class="p-4 rounded-xl bg-orange-50/70 border-l-4 border-brand-orange text-xs sm:text-sm text-slate-700 leading-relaxed">
+                <span class="font-black text-brand-orange mr-1">標準答案：(${q.answer})</span>
+                <p class="mt-1">${q.explanation}</p>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }).join("");
+    }
+
+    function toggleBankBookmark(qId) {
+      if (appData.mistakes[qId]) {
+        removeMistake(qId);
+      } else {
+        addMistake(qId);
+      }
+      renderQuestionBank();
+    }
+
+    // =========================================================================
+    // 9. 鍵盤快捷鍵支援 (電腦版刷題更流暢)
+    // =========================================================================
+    document.addEventListener("keydown", (e) => {
+      // 若正在輸入搜尋框則不觸發快捷鍵
+      if (document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "SELECT") {
+        return;
+      }
+
+      const key = e.key.toUpperCase();
+      const keyMap = { "1": "A", "2": "B", "3": "C", "4": "D", "A": "A", "B": "B", "C": "C", "D": "D" };
+
+      if (currentTab === "practice") {
+        if (keyMap[key]) {
+          handlePracticeSelect(keyMap[key]);
+        } else if (e.key === "Enter" || e.key === "ArrowRight") {
+          nextPracticeQuestion();
+        } else if (e.key === "ArrowLeft") {
+          prevPracticeQuestion();
+        }
+      } else if (currentTab === "exam" && !document.getElementById("exam-active-panel").classList.contains("hidden")) {
+        if (keyMap[key]) {
+          examState.userAnswers[examState.currentIndex] = keyMap[key];
+          renderExamQuestion();
+        } else if (e.key === "ArrowRight") {
+          nextExamQuestion();
+        } else if (e.key === "ArrowLeft") {
+          prevExamQuestion();
+        }
+      }
+    });
+
+    // =========================================================================
+    // 10. 初始化應用程式
+    // =========================================================================
+    window.addEventListener("DOMContentLoaded", () => {
+      loadAppData();
+      selectExamCount(20);
+      switchTab("dashboard");
+    });
+  </script>
+</body>
+</html>
